@@ -1341,44 +1341,45 @@
 
         html += '</tbody></table>';
 
-        // barra de paginação
+        html += buildPaginationBar(containerId, pg, totalPags, lista.length, perPage);
+        container.innerHTML = html;
+    }
+
+    function buildPaginationBar(containerId, pg, totalPags, total, perPage) {
+        if (totalPags <= 1 && total <= 10) return '';
         const inicio = (pg - 1) * perPage + 1;
-        const fim    = Math.min(pg * perPage, lista.length);
-        let paginasBtns = '';
+        const fim    = Math.min(pg * perPage, total);
+        let btns = '';
         const maxBtns = 5;
         let start = Math.max(1, pg - 2);
         let end   = Math.min(totalPags, start + maxBtns - 1);
         if (end - start < maxBtns - 1) start = Math.max(1, end - maxBtns + 1);
-
-        if (start > 1) paginasBtns += `<button class="page-btn" onclick="irPagina('${containerId}',1)">1</button>${start > 2 ? '<span style="padding:0 4px">…</span>' : ''}`;
-        for (let i = start; i <= end; i++) {
-            paginasBtns += `<button class="page-btn${i === pg ? ' active' : ''}" onclick="irPagina('${containerId}',${i})">${i}</button>`;
-        }
-        if (end < totalPags) paginasBtns += `${end < totalPags - 1 ? '<span style="padding:0 4px">…</span>' : ''}<button class="page-btn" onclick="irPagina('${containerId}',${totalPags})">${totalPags}</button>`;
-
-        html += `<div class="pagination-bar">
-            <span>Mostrando <strong>${inicio}–${fim}</strong> de <strong>${lista.length}</strong> registros</span>
+        if (start > 1) btns += `<button class="page-btn" onclick="irPagina('${containerId}',1)">1</button>${start > 2 ? '<span style="padding:0 4px">…</span>' : ''}`;
+        for (let i = start; i <= end; i++) btns += `<button class="page-btn${i===pg?' active':''}" onclick="irPagina('${containerId}',${i})">${i}</button>`;
+        if (end < totalPags) btns += `${end < totalPags-1 ? '<span style="padding:0 4px">…</span>' : ''}<button class="page-btn" onclick="irPagina('${containerId}',${totalPags})">${totalPags}</button>`;
+        return `<div class="pagination-bar">
+            <span>Mostrando <strong>${inicio}–${fim}</strong> de <strong>${total}</strong> registros</span>
             <div style="display:flex;align-items:center;gap:12px">
                 <div class="pagination-pages">
-                    <button class="page-btn" onclick="irPagina('${containerId}',${pg - 1})" ${pg <= 1 ? 'disabled' : ''}>‹</button>
-                    ${paginasBtns}
-                    <button class="page-btn" onclick="irPagina('${containerId}',${pg + 1})" ${pg >= totalPags ? 'disabled' : ''}>›</button>
+                    <button class="page-btn" onclick="irPagina('${containerId}',${pg-1})" ${pg<=1?'disabled':''}>‹</button>
+                    ${btns}
+                    <button class="page-btn" onclick="irPagina('${containerId}',${pg+1})" ${pg>=totalPags?'disabled':''}>›</button>
                 </div>
-                <select class="per-page-select" onchange="mudarPerPage('${containerId}', this.value)">
-                    <option value="10"  ${perPage===10  ? 'selected':''}>10 / pág</option>
-                    <option value="30"  ${perPage===30  ? 'selected':''}>30 / pág</option>
-                    <option value="50"  ${perPage===50  ? 'selected':''}>50 / pág</option>
-                    <option value="100" ${perPage===100 ? 'selected':''}>100 / pág</option>
+                <select class="per-page-select" onchange="mudarPerPage('${containerId}',this.value)">
+                    <option value="10"  ${perPage===10 ?'selected':''}>10 / pág</option>
+                    <option value="30"  ${perPage===30 ?'selected':''}>30 / pág</option>
+                    <option value="50"  ${perPage===50 ?'selected':''}>50 / pág</option>
+                    <option value="100" ${perPage===100?'selected':''}>100 / pág</option>
                 </select>
             </div>
         </div>`;
-
-        container.innerHTML = html;
     }
 
     function irPagina(containerId, pg) {
         const s = pagState[containerId];
         if (!s) return;
+        if (s.tipo === 'usuarios') { renderUsuarios(s.lista, pg); return; }
+        if (s.tipo === 'logs')     { renderLogs(s.lista, pg);     return; }
         renderTabela(s.lista, containerId, s.isAdmin, s.showProfessor, pg);
     }
 
@@ -1386,6 +1387,8 @@
         const s = pagState[containerId];
         if (!s) return;
         s.perPage = parseInt(val);
+        if (s.tipo === 'usuarios') { renderUsuarios(s.lista, 1); return; }
+        if (s.tipo === 'logs')     { renderLogs(s.lista, 1);     return; }
         renderTabela(s.lista, containerId, s.isAdmin, s.showProfessor, 1);
     }
 
@@ -1493,17 +1496,27 @@
         } catch (err) { console.error(err); }
     }
 
-    function renderUsuarios(lista) {
-        const container = document.getElementById('tabelaUsuarios');
+    function renderUsuarios(lista, pagina = 1) {
+        const containerId = 'tabelaUsuarios';
+        const container   = document.getElementById(containerId);
         if (!lista || lista.length === 0) {
             container.innerHTML = `<div class="empty-state"><div class="icon">👥</div><div class="title">Nenhum usuário</div></div>`;
             return;
         }
+        if (!pagState[containerId]) pagState[containerId] = { perPage: 10 };
+        pagState[containerId].lista = lista;
+        pagState[containerId].tipo  = 'usuarios';
+        const perPage   = pagState[containerId].perPage;
+        const totalPags = Math.ceil(lista.length / perPage);
+        const pg        = Math.min(Math.max(pagina, 1), totalPags);
+        pagState[containerId].page = pg;
+        const slice = lista.slice((pg - 1) * perPage, pg * perPage);
+
         let html = `<table><thead><tr>
             <th>Nome</th><th>Usuário</th><th>Perfil</th><th>Criado em</th><th style="width:100px">Ações</th>
         </tr></thead><tbody>`;
 
-        lista.forEach(u => {
+        slice.forEach(u => {
             const dt = u.criado_em ? new Date(u.criado_em).toLocaleDateString('pt-BR') : '—';
             const isSelf = u.id === currentUser.id;
             html += `<tr>
@@ -1520,7 +1533,7 @@
             </tr>`;
         });
 
-        html += '</tbody></table>';
+        html += '</tbody></table>' + buildPaginationBar(containerId, pg, totalPags, lista.length, perPage);
         container.innerHTML = html;
     }
 
@@ -1638,20 +1651,29 @@
         } catch (err) { console.error(err); }
     }
 
-    function renderLogs(lista) {
-        const container = document.getElementById('tabelaLogs');
+    function renderLogs(lista, pagina = 1) {
+        const containerId = 'tabelaLogs';
+        const container   = document.getElementById(containerId);
         if (!lista || lista.length === 0) {
             container.innerHTML = `<div class="empty-state"><div class="icon">📜</div><div class="title">Nenhum log registrado</div></div>`;
             return;
         }
+        if (!pagState[containerId]) pagState[containerId] = { perPage: 10 };
+        pagState[containerId].lista = lista;
+        pagState[containerId].tipo  = 'logs';
+        const perPage   = pagState[containerId].perPage;
+        const totalPags = Math.ceil(lista.length / perPage);
+        const pg        = Math.min(Math.max(pagina, 1), totalPags);
+        pagState[containerId].page = pg;
+        const slice = lista.slice((pg - 1) * perPage, pg * perPage);
 
-        const icones = { login:'🔑', logout:'🚪', registro:'📝', status:'🔄', usuario_criado:'👤', usuario_excluido:'🗑️' };
+        const icones = { login:'🔑', logout:'🚪', registro:'📝', status:'🔄', usuario_criado:'👤', usuario_excluido:'🗑️', troca_senha:'🔐', exclusao_ocorrencia:'🗑️' };
 
         let html = `<table><thead><tr>
             <th>Data / Hora</th><th>Usuário</th><th>Perfil</th><th>Ação</th><th>Detalhes</th>
         </tr></thead><tbody>`;
 
-        lista.forEach(l => {
+        slice.forEach(l => {
             const dt  = new Date(l.criado_em).toLocaleString('pt-BR');
             const ico = icones[l.acao] || '•';
             html += `<tr class="log-row">
@@ -1663,7 +1685,7 @@
             </tr>`;
         });
 
-        html += '</tbody></table>';
+        html += '</tbody></table>' + buildPaginationBar(containerId, pg, totalPags, lista.length, perPage);
         container.innerHTML = html;
     }
 
