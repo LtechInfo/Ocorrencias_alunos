@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Ocorrências - ENAU</title>
+    <link rel="icon" type="image/png" href="favicondesktop.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -420,6 +421,10 @@
                     <span class="nav-icon">📋</span> Minhas Ocorrências
                 </button>
 
+                <button class="nav-item hidden" onclick="showSection('coordenacao', this)" id="navCoordenacao">
+                    <span class="nav-icon">👁️</span> Visualizar Ocorrências
+                </button>
+
                 <button class="nav-item hidden" onclick="showSection('admin', this)" id="navAdmin">
                     <span class="nav-icon">🛡️</span> Painel Administrativo
                 </button>
@@ -465,22 +470,58 @@
                                     <input type="datetime-local" id="dataHora" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Aluno <span class="required">*</span></label>
-                                    <input type="text" id="nomeAluno" required placeholder="Nome completo do aluno">
+                                    <label>Aluno(s) <span class="required">*</span></label>
+                                    <input type="text" id="nomeAluno" required placeholder="Nome do aluno (separe por vírgula para múltiplos)">
                                 </div>
                                 <div class="form-group">
                                     <label>Turma <span class="required">*</span></label>
-                                    <input type="text" id="turma" required placeholder="Ex: 5º Ano A">
+                                    <select id="turma" required>
+                                        <option value="">Escolher</option>
+                                        <optgroup label="Ensino Fundamental">
+                                            <option value="1º E.F">1º E.F</option>
+                                            <option value="2º E.F">2º E.F</option>
+                                            <option value="3º E.F">3º E.F</option>
+                                            <option value="4º E.F">4º E.F</option>
+                                            <option value="5º E.F">5º E.F</option>
+                                            <option value="6º E.F">6º E.F</option>
+                                            <option value="7º E.F">7º E.F</option>
+                                            <option value="8º E.F">8º E.F</option>
+                                            <option value="9º E.F">9º E.F</option>
+                                        </optgroup>
+                                        <optgroup label="Ensino Médio">
+                                            <option value="1º E.M">1º E.M</option>
+                                            <option value="2º E.M">2º E.M</option>
+                                            <option value="3º E.M">3º E.M</option>
+                                        </optgroup>
+                                    </select>
                                 </div>
                                 <div class="form-group col-2">
-                                    <label>Tipo de Ocorrência <span class="required">*</span></label>
+                                    <label>Ocorrência <span class="required">*</span></label>
                                     <select id="tipoOcorrencia" required>
-                                        <option value="">Selecione...</option>
-                                        <option value="disciplinar">Disciplinar</option>
-                                        <option value="comportamento">Comportamento</option>
-                                        <option value="material">Material Escolar</option>
-                                        <option value="frequencia">Frequência</option>
-                                        <option value="outros">Outros</option>
+                                        <option value="">Escolher</option>
+                                        <option value="DANIFICOU OBJETOS E/OU LOCAIS DO COLÉGIO">DANIFICOU OBJETOS E/OU LOCAIS DO COLÉGIO</option>
+                                        <option value="APOSTILA INCOMPLETA">APOSTILA INCOMPLETA</option>
+                                        <option value="LIÇÃO DE CASA INCOMPLETA">LIÇÃO DE CASA INCOMPLETA</option>
+                                        <option value="NÃO COPIOU A LIÇÃO">NÃO COPIOU A LIÇÃO</option>
+                                        <option value="NÃO ENTREGOU A ATIVIDADE">NÃO ENTREGOU A ATIVIDADE</option>
+                                        <option value="NÃO ENTREGOU A AVALIAÇÃO ASSINADA">NÃO ENTREGOU A AVALIAÇÃO ASSINADA</option>
+                                        <option value="NÃO ENTREGOU O TRABALHO">NÃO ENTREGOU O TRABALHO</option>
+                                        <option value="NÃO FEZ EXERCÍCIO EM SALA DE AULA">NÃO FEZ EXERCÍCIO EM SALA DE AULA</option>
+                                        <option value="NÃO PARTICIPA DAS AULAS">NÃO PARTICIPA DAS AULAS</option>
+                                        <option value="NÃO REALIZOU A LIÇÃO DE CASA">NÃO REALIZOU A LIÇÃO DE CASA</option>
+                                        <option value="NÃO TROUXE APOSTILA">NÃO TROUXE APOSTILA</option>
+                                        <option value="NÃO TROUXE MATERIAL SOLICITADO">NÃO TROUXE MATERIAL SOLICITADO</option>
+                                        <option value="NECESSITA DE AUXÍLIO DURANTE A REALIZAÇÃO DOS EXERCÍCIOS">NECESSITA DE AUXÍLIO DURANTE A REALIZAÇÃO DOS EXERCÍCIOS</option>
+                                        <option value="AGREDIR FISICAMENTE O COLEGA">AGREDIR FISICAMENTE O COLEGA</option>
+                                        <option value="AGREDIR VERBALMENTE O COLEGA">AGREDIR VERBALMENTE O COLEGA</option>
+                                        <option value="CHEGADA ATRASADA">CHEGADA ATRASADA</option>
+                                        <option value="DANIFICAR A MOBÍLIA DA SALA">DANIFICAR A MOBÍLIA DA SALA</option>
+                                        <option value="DESACATAR O PROFESSOR">DESACATAR O PROFESSOR</option>
+                                        <option value="ENTRADA ATRASADA">ENTRADA ATRASADA</option>
+                                        <option value="IMPEDIU O PROFESSOR DE DAR A AULA">IMPEDIU O PROFESSOR DE DAR A AULA</option>
+                                        <option value="NÃO RESPEITAR AS REGRAS DO COLÉGIO">NÃO RESPEITAR AS REGRAS DO COLÉGIO</option>
+                                        <option value="NÃO USOU UNIFORME">NÃO USOU UNIFORME</option>
+                                        <option value="USOU O CELULAR DURANTE A AULA">USOU O CELULAR DURANTE A AULA</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-2">
@@ -535,6 +576,64 @@
                             <button class="btn btn-ghost btn-sm" onclick="exportarOcorrencias()">📥 Exportar CSV</button>
                         </div>
                         <div id="tabelaMinhasOcorrencias"></div>
+                    </div>
+                </div>
+
+                <!-- ===== SEÇÃO COORDENAÇÃO ===== -->
+                <div id="secCoordenacao" class="section">
+                    <div class="filters-bar">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label>Aluno</label>
+                                <input type="text" id="coordFiltroAluno" placeholder="Buscar aluno...">
+                            </div>
+                            <div class="form-group">
+                                <label>Professor</label>
+                                <input type="text" id="coordFiltroProfessor" placeholder="Buscar professor...">
+                            </div>
+                            <div class="form-group">
+                                <label>Turma</label>
+                                <select id="coordFiltroTurma">
+                                    <option value="">Todas</option>
+                                    <optgroup label="Ensino Fundamental">
+                                        <option value="1º E.F">1º E.F</option>
+                                        <option value="2º E.F">2º E.F</option>
+                                        <option value="3º E.F">3º E.F</option>
+                                        <option value="4º E.F">4º E.F</option>
+                                        <option value="5º E.F">5º E.F</option>
+                                        <option value="6º E.F">6º E.F</option>
+                                        <option value="7º E.F">7º E.F</option>
+                                        <option value="8º E.F">8º E.F</option>
+                                        <option value="9º E.F">9º E.F</option>
+                                    </optgroup>
+                                    <optgroup label="Ensino Médio">
+                                        <option value="1º E.M">1º E.M</option>
+                                        <option value="2º E.M">2º E.M</option>
+                                        <option value="3º E.M">3º E.M</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="coordFiltroStatus">
+                                    <option value="">Todos</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="em-andamento">Em Andamento</option>
+                                    <option value="resolvida">Resolvida</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
+                                <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosCoord()">🔍 Filtrar</button>
+                                <button class="btn btn-ghost btn-sm" onclick="limparFiltrosCoord()">Limpar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <div class="table-bar">
+                            <h3>Todas as Ocorrências</h3>
+                            <button class="btn btn-ghost btn-sm" onclick="exportarTodasOcorrencias()">📥 Exportar CSV</button>
+                        </div>
+                        <div id="tabelaCoordOcorrencias"></div>
                     </div>
                 </div>
 
@@ -737,6 +836,7 @@
                 <label>Perfil <span class="required">*</span></label>
                 <div class="role-selector">
                     <div class="role-pill selected" id="pillProfessor" onclick="selectRole('professor')">👩‍🏫 Professor</div>
+                    <div class="role-pill" id="pillCoordenacao" onclick="selectRole('coordenacao')">👁️ Coord.</div>
                     <div class="role-pill" id="pillAdmin" onclick="selectRole('admin')">🛡️ Admin</div>
                 </div>
                 <input type="hidden" id="novoRole" value="professor">
@@ -787,9 +887,10 @@
     let todosLogs        = [];
 
     const pageTitles = {
-        registro: ['Registrar Ocorrência',   'Preencha os dados da ocorrência'],
-        lista:    ['Minhas Ocorrências',      'Ocorrências que você registrou'],
-        admin:    ['Painel Administrativo',   'Gestão completa do sistema']
+        registro:    ['Registrar Ocorrência',   'Preencha os dados da ocorrência'],
+        lista:       ['Minhas Ocorrências',      'Ocorrências que você registrou'],
+        coordenacao: ['Visualizar Ocorrências',  'Todas as ocorrências registradas'],
+        admin:       ['Painel Administrativo',   'Gestão completa do sistema']
     };
 
     // ==================== INIT ====================
@@ -857,13 +958,17 @@
 
         document.getElementById('userAvatar').textContent = currentUser.nome.charAt(0).toUpperCase();
         document.getElementById('userName').textContent   = currentUser.nome;
-        document.getElementById('userRoleLabel').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Professor';
+        const roleLabels = { admin: 'Administrador', coordenacao: 'Coordenação', professor: 'Professor' };
+        document.getElementById('userRoleLabel').textContent = roleLabels[currentUser.role] || 'Professor';
         document.getElementById('nomeProfessor').value    = currentUser.nome;
 
         if (currentUser.role === 'admin') {
             document.getElementById('navAdmin').classList.remove('hidden');
-            const badge = document.getElementById('topbarBadge');
-            badge.innerHTML = `<span class="topbar-badge">🛡️ Admin</span>`;
+            document.getElementById('topbarBadge').innerHTML = `<span class="topbar-badge">🛡️ Admin</span>`;
+        }
+        if (currentUser.role === 'coordenacao') {
+            document.getElementById('navCoordenacao').classList.remove('hidden');
+            document.getElementById('topbarBadge').innerHTML = `<span class="topbar-badge">👁️ Coordenação</span>`;
         }
 
         carregarOcorrencias();
@@ -880,8 +985,9 @@
         document.getElementById('pageTitle').textContent    = t;
         document.getElementById('pageSubtitle').textContent = s;
 
-        if (name === 'lista')  carregarMinhasOcorrencias();
-        if (name === 'admin')  carregarAdmin();
+        if (name === 'lista')       carregarMinhasOcorrencias();
+        if (name === 'coordenacao') carregarCoordOcorrencias();
+        if (name === 'admin')       carregarAdmin();
     }
 
     function showAdminTab(tab, btn) {
@@ -963,16 +1069,40 @@
         renderTabela(todasOcorrencias, 'tabelaTodasOcorrencias', true);
     }
 
-    function renderTabela(lista, containerId, isAdmin) {
+    async function carregarCoordOcorrencias() {
+        await carregarOcorrencias();
+        renderTabela(todasOcorrencias, 'tabelaCoordOcorrencias', false, true);
+    }
+
+    function aplicarFiltrosCoord() {
+        const aluno     = document.getElementById('coordFiltroAluno').value.toLowerCase();
+        const professor = document.getElementById('coordFiltroProfessor').value.toLowerCase();
+        const turma     = document.getElementById('coordFiltroTurma').value;
+        const status    = document.getElementById('coordFiltroStatus').value;
+        renderTabela(todasOcorrencias.filter(oc =>
+            (!aluno     || oc.nome_aluno.toLowerCase().includes(aluno)) &&
+            (!professor || oc.nome_professor.toLowerCase().includes(professor)) &&
+            (!turma     || oc.turma === turma) &&
+            (!status    || oc.status === status)
+        ), 'tabelaCoordOcorrencias', false, true);
+    }
+
+    function limparFiltrosCoord() {
+        ['coordFiltroAluno','coordFiltroProfessor','coordFiltroTurma','coordFiltroStatus'].forEach(id => document.getElementById(id).value = '');
+        carregarCoordOcorrencias();
+    }
+
+    function renderTabela(lista, containerId, isAdmin, showProfessor = false) {
         const container = document.getElementById(containerId);
         if (!lista || lista.length === 0) {
             container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><div class="title">Nenhuma ocorrência encontrada</div><div class="sub">Não há registros para exibir.</div></div>`;
             return;
         }
+        const mostrarProf = isAdmin || showProfessor;
         let html = `<table><thead><tr>
-            <th>Data / Hora</th><th>Aluno</th><th>Turma</th><th>Tipo</th>
-            ${isAdmin ? '<th>Professor</th>' : ''}
-            <th>Status</th><th style="width:90px">Ações</th>
+            <th>Data / Hora</th><th>Aluno</th><th>Turma</th><th>Ocorrência</th>
+            ${mostrarProf ? '<th>Professor</th>' : ''}
+            <th>Status</th><th style="width:60px">Ver</th>
         </tr></thead><tbody>`;
 
         lista.forEach(oc => {
@@ -981,8 +1111,8 @@
                 <td class="log-time">${data}</td>
                 <td><strong>${oc.nome_aluno}</strong></td>
                 <td>${oc.turma}</td>
-                <td>${badgeTipo(oc.tipo_ocorrencia)}</td>
-                ${isAdmin ? `<td>${oc.nome_professor}</td>` : ''}
+                <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${oc.tipo_ocorrencia}">${oc.tipo_ocorrencia}</td>
+                ${mostrarProf ? `<td>${oc.nome_professor}</td>` : ''}
                 <td>${badgeStatus(oc.status)}</td>
                 <td>
                     <div style="display:flex;gap:5px">
@@ -1093,7 +1223,7 @@
             html += `<tr>
                 <td><strong>${u.nome}</strong></td>
                 <td style="color:var(--text-muted);font-family:monospace">${u.username || '—'}</td>
-                <td>${u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
+                <td>${u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : u.role === 'coordenacao' ? '<span class="badge badge-frequencia">Coordenação</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
                 <td class="log-time">${dt}</td>
                 <td>
                     <div style="display:flex;gap:5px">
@@ -1209,6 +1339,7 @@
     function selectRole(role) {
         document.getElementById('novoRole').value = role;
         document.getElementById('pillProfessor').classList.toggle('selected', role === 'professor');
+        document.getElementById('pillCoordenacao').classList.toggle('selected', role === 'coordenacao');
         document.getElementById('pillAdmin').classList.toggle('selected', role === 'admin');
     }
 
@@ -1240,7 +1371,7 @@
             html += `<tr class="log-row">
                 <td class="log-time">${dt}</td>
                 <td><strong>${l.usuario_nome}</strong></td>
-                <td>${l.usuario_role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
+                <td>${l.usuario_role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : l.usuario_role === 'coordenacao' ? '<span class="badge badge-frequencia">Coordenação</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
                 <td>${ico} ${formatarAcao(l.acao)}</td>
                 <td style="color:var(--text-muted);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${l.detalhes || ''}">${l.detalhes || '—'}</td>
             </tr>`;
