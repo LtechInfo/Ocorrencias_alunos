@@ -159,10 +159,30 @@
 
         .btn-logout-sm {
             background: none; border: none; cursor: pointer;
-            color: rgba(255,255,255,0.4); font-size: 16px;
-            padding: 4px; border-radius: 4px; transition: color 0.2s;
+            color: rgba(255,255,255,0.4); font-size: 14px;
+            padding: 5px 7px; border-radius: 4px; transition: color 0.2s;
+            line-height: 1; display: flex; align-items: center; justify-content: center;
         }
         .btn-logout-sm:hover { color: var(--p4); }
+
+        /* Paginação */
+        .pagination-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 20px; border-top: 1px solid var(--border);
+            font-size: 13px; color: var(--text-muted); flex-wrap: wrap; gap: 10px;
+        }
+        .pagination-pages { display: flex; align-items: center; gap: 4px; }
+        .page-btn {
+            min-width: 32px; height: 32px; padding: 0 8px;
+            border: 1.5px solid var(--border); border-radius: 6px;
+            background: var(--white); color: var(--text); font-size: 13px;
+            font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .page-btn:hover { border-color: var(--p2); color: var(--p2); }
+        .page-btn.active { background: var(--p1); border-color: var(--p1); color: white; font-weight: 600; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .per-page-select { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text); }
 
         /* ===== MAIN ===== */
         .main-content { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
@@ -442,7 +462,9 @@
                         <div class="name" id="userName">Usuário</div>
                         <div class="role" id="userRoleLabel">Professor</div>
                     </div>
-                    <button class="btn-logout-sm" onclick="logout()" title="Sair">🚪</button>
+                    <button class="btn-logout-sm" onclick="logout()" title="Sair">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>
+                    </button>
                 </div>
             </div>
         </aside>
@@ -905,6 +927,23 @@
     </div>
 </div>
 
+<!-- MODAL: CONFIRMAR EXCLUSÃO DE OCORRÊNCIA -->
+<div id="modalConfirmarOc" class="modal">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h3>Excluir Ocorrência</h3>
+            <button class="btn-modal-close" onclick="fecharModal('modalConfirmarOc')">×</button>
+        </div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px">
+            Tem certeza que deseja excluir esta ocorrência? Esta ação não pode ser desfeita.
+        </p>
+        <div class="form-actions">
+            <button class="btn btn-ghost" onclick="fecharModal('modalConfirmarOc')">Cancelar</button>
+            <button class="btn btn-danger" id="btnConfirmarExclusaoOc">🗑️ Excluir</button>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL: CONFIRMAR EXCLUSÃO -->
 <div id="modalConfirmar" class="modal">
     <div class="modal-box modal-box-sm">
@@ -1249,20 +1288,37 @@
         carregarCoordOcorrencias();
     }
 
-    function renderTabela(lista, containerId, isAdmin, showProfessor = false) {
+    // estado de paginação por container
+    const pagState = {};
+
+    function renderTabela(lista, containerId, isAdmin, showProfessor = false, pagina = 1) {
         const container = document.getElementById(containerId);
         if (!lista || lista.length === 0) {
             container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><div class="title">Nenhuma ocorrência encontrada</div><div class="sub">Não há registros para exibir.</div></div>`;
             return;
         }
+
+        // salva estado para re-render ao mudar página/tamanho
+        if (!pagState[containerId]) pagState[containerId] = { perPage: 10 };
+        pagState[containerId].lista        = lista;
+        pagState[containerId].isAdmin      = isAdmin;
+        pagState[containerId].showProfessor= showProfessor;
+        pagState[containerId].page         = pagina;
+
+        const perPage   = pagState[containerId].perPage;
+        const totalPags = Math.ceil(lista.length / perPage);
+        const pg        = Math.min(Math.max(pagina, 1), totalPags);
+        pagState[containerId].page = pg;
+        const slice = lista.slice((pg - 1) * perPage, pg * perPage);
+
         const mostrarProf = isAdmin || showProfessor;
         let html = `<table><thead><tr>
             <th>Data / Hora</th><th>Aluno</th><th>Turma</th><th>Ocorrência</th>
             ${mostrarProf ? '<th>Professor</th>' : ''}
-            ${isAdmin ? '<th>Status</th><th style="width:90px">Ações</th>' : '<th style="width:60px">Ver</th>'}
+            ${isAdmin ? '<th>Status</th><th style="width:110px">Ações</th>' : '<th style="width:60px">Ver</th>'}
         </tr></thead><tbody>`;
 
-        lista.forEach(oc => {
+        slice.forEach(oc => {
             const data = new Date(oc.data_hora).toLocaleString('pt-BR');
             html += `<tr>
                 <td class="log-time">${data}</td>
@@ -1274,14 +1330,63 @@
                 <td>
                     <div style="display:flex;gap:5px">
                         <button class="btn btn-icon-only" style="background:#ede9fe;color:#4c1d95" onclick="visualizarOcorrencia('${oc.id}')" title="Visualizar">👁</button>
-                        ${isAdmin ? `<button class="btn btn-icon-only" style="background:var(--p3-light);color:var(--p3)" onclick="editarStatus('${oc.id}')" title="Dar baixa">✏️</button>` : ''}
+                        ${isAdmin ? `
+                        <button class="btn btn-icon-only" style="background:var(--p3-light);color:var(--p3)" onclick="editarStatus('${oc.id}')" title="Dar baixa">✏️</button>
+                        <button class="btn btn-icon-only" style="background:#fee2e2;color:#991b1b" onclick="confirmarExclusaoOc('${oc.id}')" title="Excluir">🗑</button>
+                        ` : ''}
                     </div>
                 </td>
             </tr>`;
         });
 
         html += '</tbody></table>';
+
+        // barra de paginação
+        const inicio = (pg - 1) * perPage + 1;
+        const fim    = Math.min(pg * perPage, lista.length);
+        let paginasBtns = '';
+        const maxBtns = 5;
+        let start = Math.max(1, pg - 2);
+        let end   = Math.min(totalPags, start + maxBtns - 1);
+        if (end - start < maxBtns - 1) start = Math.max(1, end - maxBtns + 1);
+
+        if (start > 1) paginasBtns += `<button class="page-btn" onclick="irPagina('${containerId}',1)">1</button>${start > 2 ? '<span style="padding:0 4px">…</span>' : ''}`;
+        for (let i = start; i <= end; i++) {
+            paginasBtns += `<button class="page-btn${i === pg ? ' active' : ''}" onclick="irPagina('${containerId}',${i})">${i}</button>`;
+        }
+        if (end < totalPags) paginasBtns += `${end < totalPags - 1 ? '<span style="padding:0 4px">…</span>' : ''}<button class="page-btn" onclick="irPagina('${containerId}',${totalPags})">${totalPags}</button>`;
+
+        html += `<div class="pagination-bar">
+            <span>Mostrando <strong>${inicio}–${fim}</strong> de <strong>${lista.length}</strong> registros</span>
+            <div style="display:flex;align-items:center;gap:12px">
+                <div class="pagination-pages">
+                    <button class="page-btn" onclick="irPagina('${containerId}',${pg - 1})" ${pg <= 1 ? 'disabled' : ''}>‹</button>
+                    ${paginasBtns}
+                    <button class="page-btn" onclick="irPagina('${containerId}',${pg + 1})" ${pg >= totalPags ? 'disabled' : ''}>›</button>
+                </div>
+                <select class="per-page-select" onchange="mudarPerPage('${containerId}', this.value)">
+                    <option value="10"  ${perPage===10  ? 'selected':''}>10 / pág</option>
+                    <option value="30"  ${perPage===30  ? 'selected':''}>30 / pág</option>
+                    <option value="50"  ${perPage===50  ? 'selected':''}>50 / pág</option>
+                    <option value="100" ${perPage===100 ? 'selected':''}>100 / pág</option>
+                </select>
+            </div>
+        </div>`;
+
         container.innerHTML = html;
+    }
+
+    function irPagina(containerId, pg) {
+        const s = pagState[containerId];
+        if (!s) return;
+        renderTabela(s.lista, containerId, s.isAdmin, s.showProfessor, pg);
+    }
+
+    function mudarPerPage(containerId, val) {
+        const s = pagState[containerId];
+        if (!s) return;
+        s.perPage = parseInt(val);
+        renderTabela(s.lista, containerId, s.isAdmin, s.showProfessor, 1);
     }
 
     function visualizarOcorrencia(id) {
@@ -1328,6 +1433,30 @@
                 carregarTodasOcorrencias();
             } else {
                 mostrarAlerta('Erro ao atualizar status.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            mostrarAlerta('Erro de conexão.', 'error');
+        }
+    }
+
+    // ==================== EXCLUSÃO OCORRÊNCIA ====================
+    function confirmarExclusaoOc(id) {
+        document.getElementById('modalConfirmarOc').classList.add('active');
+        document.getElementById('btnConfirmarExclusaoOc').onclick = () => excluirOcorrencia(id);
+    }
+
+    async function excluirOcorrencia(id) {
+        const oc = todasOcorrencias.find(o => o.id === id);
+        try {
+            const res = await api(`ocorrencias?id=eq.${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                fecharModal('modalConfirmarOc');
+                mostrarAlerta('Ocorrência excluída.', 'success');
+                registrarLog('exclusao_ocorrencia', `Ocorrência de ${oc?.nome_aluno} (${oc?.turma}) excluída`);
+                await carregarTodasOcorrencias();
+            } else {
+                mostrarAlerta('Erro ao excluir ocorrência.', 'error');
             }
         } catch (err) {
             console.error(err);
@@ -1675,7 +1804,7 @@
     }
 
     function formatarAcao(a) {
-        const map = { login:'Login', logout:'Logout', registro:'Registro de Ocorrência', status:'Atualização de Status', usuario_criado:'Usuário Criado/Editado', usuario_excluido:'Usuário Excluído', troca_senha:'Troca de Senha' };
+        const map = { login:'Login', logout:'Logout', registro:'Registro de Ocorrência', status:'Atualização de Status', usuario_criado:'Usuário Criado/Editado', usuario_excluido:'Usuário Excluído', troca_senha:'Troca de Senha', exclusao_ocorrencia:'Exclusão de Ocorrência' };
         return map[a] || a;
     }
 
