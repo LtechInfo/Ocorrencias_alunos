@@ -9,31 +9,27 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --primary-light: #EEF2FF;
-            --danger: #EF4444;
-            --danger-light: #FEF2F2;
-            --warning: #F59E0B;
-            --warning-light: #FFFBEB;
-            --success: #10B981;
-            --success-light: #ECFDF5;
-            --info: #3B82F6;
-            --info-light: #EFF6FF;
-            --text: #111827;
-            --text-muted: #6B7280;
-            --border: #E5E7EB;
-            --bg: #F9FAFB;
-            --white: #FFFFFF;
+            --p1: #4A1456;
+            --p2: #7B2D6E;
+            --p3: #C0394B;
+            --p4: #E05A5A;
+            --p1-light: #f5eef8;
+            --p3-light: #fdf0f1;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --info: #1d4ed8;
+            --info-light: #dbeafe;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f8f8fb;
+            --white: #ffffff;
             --sidebar-w: 260px;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
         /* ===== LOGIN ===== */
         .login-screen {
@@ -41,644 +37,343 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            background: linear-gradient(150deg, var(--p1) 0%, var(--p2) 50%, var(--p3) 100%);
         }
 
         .login-card {
             background: var(--white);
             border-radius: 20px;
-            padding: 48px 40px;
+            padding: 48px 40px 40px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            box-shadow: 0 30px 60px rgba(74,20,86,0.35);
         }
 
-        .login-logo {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+        .login-logo-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 28px;
+        }
+
+        .login-logo-wrap .logo-bg {
+            background: linear-gradient(150deg, var(--p1), var(--p3));
             border-radius: 16px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            margin: 0 auto 24px;
+            margin-bottom: 10px;
         }
 
-        .login-card h2 {
-            text-align: center;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
+        .login-logo-wrap img { height: 44px; filter: brightness(0) invert(1); }
 
-        .login-card p {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 32px;
-        }
+        .login-card h2 { text-align: center; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+        .login-card .sub { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text);
-            margin-bottom: 6px;
-        }
-
+        /* Forms */
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
         input, select, textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            color: var(--text);
-            background: var(--white);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; padding: 10px 14px;
+            border: 1.5px solid var(--border); border-radius: 8px;
+            font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text);
+            background: var(--white); transition: border-color 0.2s, box-shadow 0.2s;
         }
-
         input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+            outline: none; border-color: var(--p2);
+            box-shadow: 0 0 0 3px rgba(123,45,110,0.12);
         }
+        textarea { min-height: 96px; resize: vertical; }
 
-        textarea { min-height: 100px; resize: vertical; }
-
+        /* Buttons */
         .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 10px 18px; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif;
+            cursor: pointer; transition: all 0.18s;
         }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        .btn-primary:hover { background: var(--primary-hover); }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1.5px solid var(--border);
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--p1), var(--p3)); color: white; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border); }
         .btn-ghost:hover { background: var(--bg); }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger  { background: var(--p3); color: white; }
         .btn-full { width: 100%; justify-content: center; }
-        .btn-sm { padding: 6px 12px; font-size: 13px; }
-        .btn-icon-only {
-            width: 32px; height: 32px;
-            padding: 0;
-            justify-content: center;
-            border-radius: 6px;
-            font-size: 15px;
-        }
+        .btn-sm { padding: 7px 13px; font-size: 13px; }
+        .btn-icon-only { width: 32px; height: 32px; padding: 0; justify-content: center; border-radius: 6px; font-size: 15px; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
-        /* ===== LAYOUT PRINCIPAL ===== */
-        .app-layout {
-            display: flex;
-            min-height: 100vh;
-        }
+        /* ===== APP LAYOUT ===== */
+        .app-layout { display: flex; min-height: 100vh; }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
             width: var(--sidebar-w);
-            background: var(--white);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; left: 0;
-            height: 100vh;
-            z-index: 50;
+            background: linear-gradient(180deg, var(--p1) 0%, #3a1044 100%);
+            display: flex; flex-direction: column;
+            position: fixed; top: 0; left: 0; height: 100vh; z-index: 50;
         }
 
         .sidebar-brand {
-            padding: 24px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            padding: 20px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 10px;
         }
 
-        .brand-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, #4F46E5, #7C3AED);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            flex-shrink: 0;
-        }
+        .sidebar-brand img { height: 32px; filter: brightness(0) invert(1); }
 
-        .brand-text h3 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.2;
-        }
-
-        .brand-text span {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 16px 12px;
-            overflow-y: auto;
-        }
+        .sidebar-nav { flex: 1; padding: 16px 10px; overflow-y: auto; }
 
         .nav-label {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-muted);
-            padding: 0 8px;
-            margin-bottom: 6px;
-            margin-top: 16px;
+            font-size: 10px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.9px; color: rgba(255,255,255,0.35);
+            padding: 0 8px; margin-bottom: 4px; margin-top: 14px;
         }
 
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.15s;
-            border: none;
-            background: none;
-            width: 100%;
-            font-family: 'Inter', sans-serif;
-            text-align: left;
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 12px; border-radius: 8px;
+            font-size: 13.5px; font-weight: 500; color: rgba(255,255,255,0.65);
+            cursor: pointer; transition: all 0.15s;
+            border: none; background: none; width: 100%;
+            font-family: 'Inter', sans-serif; text-align: left;
         }
-
-        .nav-item:hover {
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .nav-item.active {
-            background: var(--primary-light);
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .nav-icon { font-size: 17px; flex-shrink: 0; }
+        .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+        .nav-item.active { background: rgba(255,255,255,0.15); color: white; font-weight: 600; }
+        .nav-icon { font-size: 16px; flex-shrink: 0; }
 
         .sidebar-footer {
-            padding: 16px 12px;
-            border-top: 1px solid var(--border);
+            padding: 14px 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .user-card {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: var(--bg);
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; border-radius: 10px;
+            background: rgba(255,255,255,0.08);
         }
 
         .user-avatar {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, #4F46E5, #7C3AED);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: white;
-            font-weight: 600;
-            flex-shrink: 0;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--p3), var(--p4));
+            border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; font-size: 15px; color: white;
+            font-weight: 700; flex-shrink: 0;
         }
 
-        .user-info-sidebar { flex: 1; min-width: 0; }
-        .user-info-sidebar .name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .user-info-sidebar .role {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+        .user-info-sb { flex: 1; min-width: 0; }
+        .user-info-sb .name { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-info-sb .role { font-size: 11px; color: rgba(255,255,255,0.5); }
 
         .btn-logout-sm {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-size: 16px;
-            padding: 4px;
-            border-radius: 4px;
-            transition: color 0.2s;
+            background: none; border: none; cursor: pointer;
+            color: rgba(255,255,255,0.4); font-size: 16px;
+            padding: 4px; border-radius: 4px; transition: color 0.2s;
         }
-        .btn-logout-sm:hover { color: var(--danger); }
+        .btn-logout-sm:hover { color: var(--p4); }
 
-        /* ===== CONTEÚDO PRINCIPAL ===== */
-        .main-content {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        /* ===== MAIN ===== */
+        .main-content { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
         .topbar {
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 40;
+            background: var(--white); border-bottom: 1px solid var(--border);
+            padding: 0 32px; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 40;
         }
 
-        .topbar-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
+        .topbar-left h2 { font-size: 17px; font-weight: 700; color: var(--text); }
+        .topbar-left span { font-size: 12px; color: var(--text-muted); }
+
+        .topbar-badge {
+            background: var(--p1-light); color: var(--p1);
+            font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
         }
 
-        .topbar-subtitle {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 1px;
-        }
+        .page-body { padding: 28px 32px; flex: 1; }
 
-        .page-body {
-            padding: 32px;
-            flex: 1;
-        }
-
-        /* ===== SEÇÕES ===== */
+        /* Sections */
         .section { display: none; }
-        .section.active {
-            display: block;
-            animation: fadeUp 0.2s ease;
-        }
+        .section.active { display: block; animation: fadeUp 0.2s ease; }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(6px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== CARDS ===== */
+        /* Card */
         .card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; margin-bottom: 20px;
         }
-
         .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 15px; font-weight: 600; color: var(--text);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+            padding-bottom: 14px; border-bottom: 1px solid var(--border);
         }
 
-        /* ===== STATS ===== */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
+        /* Stats */
+        .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
         .stat-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px 20px;
+            display: flex; align-items: center; gap: 14px;
+            transition: transform 0.15s;
         }
+        .stat-card:hover { transform: translateY(-2px); }
 
         .stat-icon-box {
-            width: 44px; height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0;
         }
+        .ic-p1 { background: var(--p1-light); }
+        .ic-p3 { background: var(--p3-light); }
+        .ic-green { background: var(--success-light); }
+        .ic-blue  { background: var(--info-light); }
+        .ic-warn  { background: var(--warning-light); }
 
-        .stat-icon-box.indigo { background: var(--primary-light); }
-        .stat-icon-box.amber  { background: var(--warning-light); }
-        .stat-icon-box.green  { background: var(--success-light); }
-        .stat-icon-box.blue   { background: var(--info-light); }
+        .stat-number { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 3px; }
+        .stat-label  { font-size: 12px; color: var(--text-muted); }
 
-        .stat-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        /* ===== FORM ===== */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .col-span-2 { grid-column: span 2; }
-
-        .required { color: var(--danger); }
-
+        /* Form grid */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .col-2 { grid-column: span 2; }
+        .required { color: var(--p3); }
         .form-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            padding-top: 20px;
-            margin-top: 8px;
-            border-top: 1px solid var(--border);
+            display: flex; gap: 10px; justify-content: flex-end;
+            padding-top: 18px; margin-top: 6px; border-top: 1px solid var(--border);
         }
 
-        /* ===== TABLE ===== */
-        .table-wrap {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
+        /* Table */
+        .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
         .table-bar {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 14px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
         }
+        .table-bar h3 { font-size: 14px; font-weight: 600; color: var(--text); }
 
-        .table-bar h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
+        table { width: 100%; border-collapse: collapse; }
         thead th {
-            padding: 11px 16px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
+            padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-muted); background: var(--bg); border-bottom: 1px solid var(--border);
         }
-
-        tbody td {
-            padding: 13px 16px;
-            font-size: 14px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text);
-        }
-
+        tbody td { padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--border); color: var(--text); }
         tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: #FAFAFA; }
+        tbody tr:hover td { background: #fafafa; }
 
-        /* ===== BADGES ===== */
+        /* Badges */
         .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
+            display: inline-flex; align-items: center;
+            padding: 3px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 500;
         }
+        .badge-pendente     { background: #fef3c7; color: #92400e; }
+        .badge-andamento    { background: #dbeafe; color: #1e3a8a; }
+        .badge-resolvida    { background: #dcfce7; color: #14532d; }
+        .badge-disciplinar  { background: #fee2e2; color: #991b1b; }
+        .badge-comportamento{ background: #fef3c7; color: #92400e; }
+        .badge-material     { background: #dbeafe; color: #1e40af; }
+        .badge-frequencia   { background: var(--p1-light); color: var(--p1); }
+        .badge-outros       { background: #f3f4f6; color: #374151; }
+        .badge-admin        { background: linear-gradient(135deg,var(--p1),var(--p3)); color: white; }
+        .badge-professor    { background: var(--p1-light); color: var(--p1); }
 
-        .badge-pendente    { background: #FEF3C7; color: #92400E; }
-        .badge-andamento   { background: #DBEAFE; color: #1E40AF; }
-        .badge-resolvida   { background: #D1FAE5; color: #065F46; }
-        .badge-disciplinar { background: #FEE2E2; color: #991B1B; }
-        .badge-comportamento { background: #FEF3C7; color: #92400E; }
-        .badge-material    { background: #DBEAFE; color: #1E40AF; }
-        .badge-frequencia  { background: #EDE9FE; color: #5B21B6; }
-        .badge-outros      { background: #F3F4F6; color: #374151; }
-
-        /* ===== FILTERS ===== */
-        .filters-bar {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-        }
-
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            align-items: end;
-        }
-
+        /* Filters */
+        .filters-bar { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; }
+        .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; align-items: end; }
         .filters-grid .form-group { margin: 0; }
 
-        /* ===== MODAL ===== */
+        /* Modal */
         .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(3px);
+            display: none; position: fixed; inset: 0;
+            background: rgba(30,10,40,0.45); z-index: 200;
+            align-items: center; justify-content: center; backdrop-filter: blur(3px);
         }
-
         .modal.active { display: flex; }
-
         .modal-box {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 28px;
-            width: 90%;
-            max-width: 560px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            animation: modalIn 0.2s ease;
+            background: var(--white); border-radius: 16px; padding: 26px;
+            width: 90%; max-width: 580px; max-height: 92vh; overflow-y: auto;
+            box-shadow: 0 24px 60px rgba(74,20,86,0.25); animation: modalIn 0.2s ease;
         }
-
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.97); }
-            to   { opacity: 1; transform: scale(1); }
-        }
-
+        .modal-box-sm { max-width: 380px; }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
         }
-
-        .modal-header h3 {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
+        .modal-header h3 { font-size: 16px; font-weight: 700; color: var(--text); }
         .btn-modal-close {
-            background: var(--bg);
-            border: none;
-            width: 30px; height: 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 18px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
+            background: var(--bg); border: none; width: 28px; height: 28px;
+            border-radius: 6px; cursor: pointer; font-size: 17px; color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center; transition: all 0.15s;
         }
+        .btn-modal-close:hover { background: var(--p3-light); color: var(--p3); }
 
-        .btn-modal-close:hover { background: var(--danger-light); color: var(--danger); }
-
-        /* Detail grid inside modal */
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
+        /* Detail grid */
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .detail-item { display: flex; flex-direction: column; gap: 4px; }
         .detail-item.full { grid-column: span 2; }
+        .detail-label { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .detail-value { font-size: 13.5px; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); }
 
-        .detail-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-        }
+        /* Alert */
+        .alert { display: flex; align-items: center; gap: 10px; padding: 11px 15px; border-radius: 8px; font-size: 13.5px; margin-bottom: 10px; animation: fadeUp 0.2s ease; }
+        .alert-success { background: var(--success-light); color: #14532d; border: 1px solid #86efac; }
+        .alert-error   { background: var(--p3-light); color: #7f1d1d; border: 1px solid #fca5a5; }
+        .alert-info    { background: var(--info-light); color: #1e3a8a; border: 1px solid #93c5fd; }
 
-        .detail-value {
-            font-size: 14px;
-            color: var(--text);
-            background: var(--bg);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
+        /* Empty state */
+        .empty-state { text-align: center; padding: 56px 20px; color: var(--text-muted); }
+        .empty-state .icon  { font-size: 44px; margin-bottom: 10px; }
+        .empty-state .title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+        .empty-state .sub   { font-size: 13px; }
 
-        /* ===== ALERTS ===== */
-        .alert {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            animation: fadeUp 0.2s ease;
-        }
-
-        .alert-success { background: var(--success-light); color: #065F46; border: 1px solid #A7F3D0; }
-        .alert-error   { background: var(--danger-light);  color: #991B1B; border: 1px solid #FECACA; }
-        .alert-info    { background: var(--info-light);    color: #1E40AF; border: 1px solid #BFDBFE; }
-
-        /* ===== EMPTY STATE ===== */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-        .empty-state .title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-        .empty-state .sub   { font-size: 14px; }
-
-        /* ===== LOADING ===== */
-        .spinner {
-            display: inline-block;
-            width: 16px; height: 16px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
+        /* Spinner */
+        .spinner { display: inline-block; width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Log specific */
+        .log-row td { font-size: 13px; }
+        .log-time { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+
+        /* Tabs internas (admin) */
+        .inner-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg); padding: 4px; border-radius: 10px; border: 1px solid var(--border); width: fit-content; }
+        .inner-tab {
+            padding: 7px 18px; border: none; border-radius: 7px; font-size: 13px; font-weight: 500;
+            font-family: 'Inter', sans-serif; color: var(--text-muted); cursor: pointer; background: none; transition: all 0.15s;
+        }
+        .inner-tab.active { background: white; color: var(--p1); font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+        /* Seções internas admin */
+        .admin-section { display: none; }
+        .admin-section.active { display: block; animation: fadeUp 0.2s; }
+
+        /* Pills de role no form */
+        .role-selector { display: flex; gap: 8px; }
+        .role-pill {
+            flex: 1; padding: 9px; border: 1.5px solid var(--border); border-radius: 8px;
+            text-align: center; cursor: pointer; font-size: 13px; font-weight: 500;
+            color: var(--text-muted); transition: all 0.15s;
+        }
+        .role-pill.selected { border-color: var(--p2); background: var(--p1-light); color: var(--p1); font-weight: 600; }
 
         .hidden { display: none !important; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .sidebar { transform: translateX(-100%); }
             .main-content { margin-left: 0; }
             .stats-row { grid-template-columns: 1fr 1fr; }
             .form-grid { grid-template-columns: 1fr; }
-            .col-span-2 { grid-column: span 1; }
+            .col-2 { grid-column: span 1; }
         }
-
         @media (max-width: 600px) {
             .page-body { padding: 16px; }
             .stats-row { grid-template-columns: 1fr; }
             .detail-grid { grid-template-columns: 1fr; }
             .detail-item.full { grid-column: span 1; }
+            .topbar { padding: 0 16px; }
         }
     </style>
 </head>
@@ -687,27 +382,31 @@
 <!-- ==================== LOGIN ==================== -->
 <div id="loginScreen" class="login-screen">
     <div class="login-card">
-        <div class="login-logo">E</div>
+        <div class="login-logo-wrap">
+            <div class="logo-bg">
+                <img src="logoco.png" alt="ENAU">
+            </div>
+        </div>
         <h2>Sistema de Ocorrências</h2>
-        <p>Colégio ENAU — faça login para continuar</p>
+        <p class="sub">Faça login para continuar</p>
 
         <div id="loginAlert"></div>
 
         <form id="loginForm">
             <div class="form-group">
-                <label for="loginEmail">E-mail</label>
-                <input type="email" id="loginEmail" required placeholder="seu.email@enau.com">
+                <label for="loginUsername">Usuário</label>
+                <input type="text" id="loginUsername" required placeholder="seu.usuario" autocomplete="username">
             </div>
             <div class="form-group">
                 <label for="loginSenha">Senha</label>
-                <input type="password" id="loginSenha" required placeholder="••••••••">
+                <input type="password" id="loginSenha" required placeholder="••••••••" autocomplete="current-password">
             </div>
-            <button type="submit" class="btn btn-primary btn-full" style="margin-top: 8px;">
+            <button type="submit" class="btn btn-primary btn-full" id="btnLogin" style="margin-top:10px">
                 Entrar
             </button>
         </form>
 
-        <p style="margin-top: 24px; text-align: center; font-size: 12px; color: var(--text-muted);">
+        <p style="margin-top:22px;text-align:center;font-size:11px;color:var(--text-muted);">
             Lucas Martins / LTech Informática &middot; 2026
         </p>
     </div>
@@ -720,38 +419,31 @@
         <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <div class="brand-icon">E</div>
-                <div class="brand-text">
-                    <h3>ENAU</h3>
-                    <span>Ocorrências Escolares</span>
-                </div>
+                <img src="logoco.png" alt="ENAU">
             </div>
 
             <nav class="sidebar-nav">
                 <div class="nav-label">Menu</div>
 
                 <button class="nav-item active" onclick="showSection('registro', this)">
-                    <span class="nav-icon">📝</span>
-                    Registrar Ocorrência
+                    <span class="nav-icon">📝</span> Registrar Ocorrência
                 </button>
 
-                <button class="nav-item" onclick="showSection('lista', this)" id="navLista">
-                    <span class="nav-icon">📋</span>
-                    Minhas Ocorrências
+                <button class="nav-item" onclick="showSection('lista', this)">
+                    <span class="nav-icon">📋</span> Minhas Ocorrências
                 </button>
 
                 <button class="nav-item hidden" onclick="showSection('admin', this)" id="navAdmin">
-                    <span class="nav-icon">⚙️</span>
-                    Painel Administrativo
+                    <span class="nav-icon">🛡️</span> Painel Administrativo
                 </button>
             </nav>
 
             <div class="sidebar-footer">
                 <div class="user-card">
                     <div class="user-avatar" id="userAvatar">?</div>
-                    <div class="user-info-sidebar">
+                    <div class="user-info-sb">
                         <div class="name" id="userName">Usuário</div>
-                        <div class="role" id="userRole">Professor</div>
+                        <div class="role" id="userRoleLabel">Professor</div>
                     </div>
                     <button class="btn-logout-sm" onclick="logout()" title="Sair">🚪</button>
                 </div>
@@ -760,42 +452,41 @@
 
         <!-- MAIN -->
         <div class="main-content">
-
-            <!-- TOPBAR -->
             <div class="topbar">
-                <div>
-                    <div class="topbar-title" id="pageTitle">Registrar Ocorrência</div>
-                    <div class="topbar-subtitle" id="pageSubtitle">Preencha os dados da ocorrência abaixo</div>
+                <div class="topbar-left">
+                    <h2 id="pageTitle">Registrar Ocorrência</h2>
+                    <span id="pageSubtitle">Preencha os dados da ocorrência abaixo</span>
                 </div>
+                <div id="topbarBadge"></div>
             </div>
 
             <div class="page-body">
                 <div id="alertContainer"></div>
 
-                <!-- SEÇÃO: REGISTRO -->
+                <!-- ===== SEÇÃO REGISTRO ===== -->
                 <div id="secRegistro" class="section active">
                     <div class="card">
                         <div class="card-title">📝 Nova Ocorrência</div>
                         <form id="formOcorrencia">
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label for="nomeProfessor">Professor <span class="required">*</span></label>
+                                    <label>Professor <span class="required">*</span></label>
                                     <input type="text" id="nomeProfessor" required placeholder="Seu nome completo">
                                 </div>
                                 <div class="form-group">
-                                    <label for="dataHora">Data e Hora <span class="required">*</span></label>
+                                    <label>Data e Hora <span class="required">*</span></label>
                                     <input type="datetime-local" id="dataHora" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nomeAluno">Aluno <span class="required">*</span></label>
+                                    <label>Aluno <span class="required">*</span></label>
                                     <input type="text" id="nomeAluno" required placeholder="Nome completo do aluno">
                                 </div>
                                 <div class="form-group">
-                                    <label for="turma">Turma <span class="required">*</span></label>
+                                    <label>Turma <span class="required">*</span></label>
                                     <input type="text" id="turma" required placeholder="Ex: 5º Ano A">
                                 </div>
-                                <div class="form-group col-span-2">
-                                    <label for="tipoOcorrencia">Tipo de Ocorrência <span class="required">*</span></label>
+                                <div class="form-group col-2">
+                                    <label>Tipo de Ocorrência <span class="required">*</span></label>
                                     <select id="tipoOcorrencia" required>
                                         <option value="">Selecione...</option>
                                         <option value="disciplinar">Disciplinar</option>
@@ -805,26 +496,24 @@
                                         <option value="outros">Outros</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-span-2">
-                                    <label for="descricao">Descrição <span class="required">*</span></label>
+                                <div class="form-group col-2">
+                                    <label>Descrição <span class="required">*</span></label>
                                     <textarea id="descricao" required placeholder="Descreva detalhadamente o ocorrido..."></textarea>
                                 </div>
-                                <div class="form-group col-span-2">
-                                    <label for="acaoTomada">Ação Tomada <span style="color:var(--text-muted);font-weight:400;">(opcional)</span></label>
+                                <div class="form-group col-2">
+                                    <label>Ação Tomada <small style="color:var(--text-muted);font-weight:400">(opcional)</small></label>
                                     <textarea id="acaoTomada" placeholder="Descreva as ações tomadas..."></textarea>
                                 </div>
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="btn btn-ghost" onclick="limparForm()">Limpar</button>
-                                <button type="submit" class="btn btn-primary" id="btnRegistrar">
-                                    💾 Registrar Ocorrência
-                                </button>
+                                <button type="submit" class="btn btn-primary" id="btnRegistrar">💾 Registrar Ocorrência</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- SEÇÃO: MINHAS OCORRÊNCIAS -->
+                <!-- ===== SEÇÃO LISTA ===== -->
                 <div id="secLista" class="section">
                     <div class="filters-bar">
                         <div class="filters-grid">
@@ -847,13 +536,12 @@
                                     <option value="outros">Outros</option>
                                 </select>
                             </div>
-                            <div class="form-group" style="display:flex;align-items:flex-end;gap:8px;">
+                            <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
                                 <button class="btn btn-primary btn-sm" onclick="aplicarFiltros()">🔍 Filtrar</button>
                                 <button class="btn btn-ghost btn-sm" onclick="limparFiltros()">Limpar</button>
                             </div>
                         </div>
                     </div>
-
                     <div class="table-wrap">
                         <div class="table-bar">
                             <h3>Minhas Ocorrências</h3>
@@ -863,91 +551,145 @@
                     </div>
                 </div>
 
-                <!-- SEÇÃO: ADMIN -->
+                <!-- ===== SEÇÃO ADMIN ===== -->
                 <div id="secAdmin" class="section">
-                    <div class="stats-row" id="statsRow">
-                        <div class="stat-card">
-                            <div class="stat-icon-box indigo">📊</div>
-                            <div>
-                                <div class="stat-number" id="statTotal">0</div>
-                                <div class="stat-label">Total de Ocorrências</div>
+
+                    <!-- inner tabs -->
+                    <div class="inner-tabs">
+                        <button class="inner-tab active" onclick="showAdminTab('ocorrencias', this)">📋 Ocorrências</button>
+                        <button class="inner-tab" onclick="showAdminTab('usuarios', this)">👥 Usuários</button>
+                        <button class="inner-tab" onclick="showAdminTab('logs', this)">📜 Logs</button>
+                    </div>
+
+                    <!-- ADMIN: OCORRÊNCIAS -->
+                    <div id="adminOcorrencias" class="admin-section active">
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-icon-box ic-p1">📊</div>
+                                <div><div class="stat-number" id="statTotal">0</div><div class="stat-label">Total</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-box ic-warn">⏳</div>
+                                <div><div class="stat-number" id="statPendentes">0</div><div class="stat-label">Pendentes</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-box ic-blue">🔄</div>
+                                <div><div class="stat-number" id="statAndamento">0</div><div class="stat-label">Em Andamento</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-box ic-green">✅</div>
+                                <div><div class="stat-number" id="statResolvidas">0</div><div class="stat-label">Resolvidas</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-box ic-p3">📅</div>
+                                <div><div class="stat-number" id="statMes">0</div><div class="stat-label">Este Mês</div></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon-box ic-p1">👩‍🏫</div>
+                                <div><div class="stat-number" id="statProfessores">0</div><div class="stat-label">Professores</div></div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-box amber">⏳</div>
-                            <div>
-                                <div class="stat-number" id="statPendentes">0</div>
-                                <div class="stat-label">Pendentes</div>
+
+                        <div class="filters-bar">
+                            <div class="filters-grid">
+                                <div class="form-group">
+                                    <label>Aluno</label>
+                                    <input type="text" id="adminFiltroAluno" placeholder="Buscar aluno...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Professor</label>
+                                    <input type="text" id="adminFiltroProfessor" placeholder="Buscar professor...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo</label>
+                                    <select id="adminFiltroTipo">
+                                        <option value="">Todos</option>
+                                        <option value="disciplinar">Disciplinar</option>
+                                        <option value="comportamento">Comportamento</option>
+                                        <option value="material">Material Escolar</option>
+                                        <option value="frequencia">Frequência</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="adminFiltroStatus">
+                                        <option value="">Todos</option>
+                                        <option value="pendente">Pendente</option>
+                                        <option value="em-andamento">Em Andamento</option>
+                                        <option value="resolvida">Resolvida</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
+                                    <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosAdmin()">🔍 Filtrar</button>
+                                    <button class="btn btn-ghost btn-sm" onclick="limparFiltrosAdmin()">Limpar</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-box green">✅</div>
-                            <div>
-                                <div class="stat-number" id="statResolvidas">0</div>
-                                <div class="stat-label">Resolvidas</div>
+
+                        <div class="table-wrap">
+                            <div class="table-bar">
+                                <h3>Todas as Ocorrências</h3>
+                                <button class="btn btn-ghost btn-sm" onclick="exportarTodasOcorrencias()">📥 Exportar CSV</button>
                             </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-box blue">📅</div>
-                            <div>
-                                <div class="stat-number" id="statMes">0</div>
-                                <div class="stat-label">Este Mês</div>
-                            </div>
+                            <div id="tabelaTodasOcorrencias"></div>
                         </div>
                     </div>
 
-                    <div class="filters-bar">
-                        <div class="filters-grid">
-                            <div class="form-group">
-                                <label>Aluno</label>
-                                <input type="text" id="adminFiltroAluno" placeholder="Buscar aluno...">
+                    <!-- ADMIN: USUÁRIOS -->
+                    <div id="adminUsuarios" class="admin-section">
+                        <div class="table-wrap">
+                            <div class="table-bar">
+                                <h3>Usuários Cadastrados</h3>
+                                <button class="btn btn-primary btn-sm" onclick="abrirModalNovoUsuario()">+ Novo Usuário</button>
                             </div>
-                            <div class="form-group">
-                                <label>Professor</label>
-                                <input type="text" id="adminFiltroProfessor" placeholder="Buscar professor...">
-                            </div>
-                            <div class="form-group">
-                                <label>Tipo</label>
-                                <select id="adminFiltroTipo">
-                                    <option value="">Todos</option>
-                                    <option value="disciplinar">Disciplinar</option>
-                                    <option value="comportamento">Comportamento</option>
-                                    <option value="material">Material Escolar</option>
-                                    <option value="frequencia">Frequência</option>
-                                    <option value="outros">Outros</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <select id="adminFiltroStatus">
-                                    <option value="">Todos</option>
-                                    <option value="pendente">Pendente</option>
-                                    <option value="em-andamento">Em Andamento</option>
-                                    <option value="resolvida">Resolvida</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="display:flex;align-items:flex-end;gap:8px;">
-                                <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosAdmin()">🔍 Filtrar</button>
-                                <button class="btn btn-ghost btn-sm" onclick="limparFiltrosAdmin()">Limpar</button>
-                            </div>
+                            <div id="tabelaUsuarios"></div>
                         </div>
                     </div>
 
-                    <div class="table-wrap">
-                        <div class="table-bar">
-                            <h3>Todas as Ocorrências</h3>
-                            <button class="btn btn-ghost btn-sm" onclick="exportarTodasOcorrencias()">📥 Exportar CSV</button>
+                    <!-- ADMIN: LOGS -->
+                    <div id="adminLogs" class="admin-section">
+                        <div class="filters-bar">
+                            <div class="filters-grid">
+                                <div class="form-group">
+                                    <label>Usuário</label>
+                                    <input type="text" id="logFiltroUsuario" placeholder="Filtrar por usuário...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ação</label>
+                                    <select id="logFiltroAcao">
+                                        <option value="">Todas</option>
+                                        <option value="login">Login</option>
+                                        <option value="logout">Logout</option>
+                                        <option value="registro">Registro de Ocorrência</option>
+                                        <option value="status">Atualização de Status</option>
+                                        <option value="usuario_criado">Usuário Criado</option>
+                                        <option value="usuario_excluido">Usuário Excluído</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
+                                    <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosLog()">🔍 Filtrar</button>
+                                    <button class="btn btn-ghost btn-sm" onclick="limparFiltrosLog()">Limpar</button>
+                                </div>
+                            </div>
                         </div>
-                        <div id="tabelaTodasOcorrencias"></div>
+                        <div class="table-wrap">
+                            <div class="table-bar">
+                                <h3>Log de Atividades</h3>
+                                <button class="btn btn-ghost btn-sm" onclick="carregarLogs()">🔄 Atualizar</button>
+                            </div>
+                            <div id="tabelaLogs"></div>
+                        </div>
                     </div>
-                </div>
+
+                </div><!-- /secAdmin -->
 
             </div><!-- /page-body -->
         </div><!-- /main-content -->
     </div><!-- /app-layout -->
 </div><!-- /mainApp -->
 
-<!-- MODAL: VISUALIZAR -->
+<!-- MODAL: VISUALIZAR OCORRÊNCIA -->
 <div id="modalVisualizar" class="modal">
     <div class="modal-box">
         <div class="modal-header">
@@ -960,7 +702,7 @@
 
 <!-- MODAL: EDITAR STATUS -->
 <div id="modalEditarStatus" class="modal">
-    <div class="modal-box" style="max-width:380px">
+    <div class="modal-box modal-box-sm">
         <div class="modal-header">
             <h3>Atualizar Status</h3>
             <button class="btn-modal-close" onclick="fecharModal('modalEditarStatus')">×</button>
@@ -968,7 +710,7 @@
         <form id="formEditarStatus">
             <input type="hidden" id="editarStatusId">
             <div class="form-group">
-                <label for="novoStatus">Novo Status <span class="required">*</span></label>
+                <label>Novo Status <span class="required">*</span></label>
                 <select id="novoStatus" required>
                     <option value="pendente">Pendente</option>
                     <option value="em-andamento">Em Andamento</option>
@@ -983,18 +725,84 @@
     </div>
 </div>
 
+<!-- MODAL: NOVO USUÁRIO -->
+<div id="modalNovoUsuario" class="modal">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h3 id="modalUsuarioTitulo">Novo Usuário</h3>
+            <button class="btn-modal-close" onclick="fecharModal('modalNovoUsuario')">×</button>
+        </div>
+        <form id="formNovoUsuario">
+            <input type="hidden" id="editUserId">
+            <div class="form-group">
+                <label>Nome Completo <span class="required">*</span></label>
+                <input type="text" id="novoNome" required placeholder="Nome completo">
+            </div>
+            <div class="form-group">
+                <label>Usuário (login) <span class="required">*</span></label>
+                <input type="text" id="novoUsername" required placeholder="sem espaços ou @">
+            </div>
+            <div class="form-group" id="senhaGroup">
+                <label>Senha <span class="required">*</span></label>
+                <input type="password" id="novaSenha" placeholder="Mínimo 4 caracteres">
+            </div>
+            <div class="form-group">
+                <label>Perfil <span class="required">*</span></label>
+                <div class="role-selector">
+                    <div class="role-pill selected" id="pillProfessor" onclick="selectRole('professor')">👩‍🏫 Professor</div>
+                    <div class="role-pill" id="pillAdmin" onclick="selectRole('admin')">🛡️ Admin</div>
+                </div>
+                <input type="hidden" id="novoRole" value="professor">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-ghost" onclick="fecharModal('modalNovoUsuario')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btnSalvarUsuario">💾 Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: CONFIRMAR EXCLUSÃO -->
+<div id="modalConfirmar" class="modal">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h3>Confirmar Exclusão</h3>
+            <button class="btn-modal-close" onclick="fecharModal('modalConfirmar')">×</button>
+        </div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px">
+            Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
+        </p>
+        <div class="form-actions">
+            <button class="btn btn-ghost" onclick="fecharModal('modalConfirmar')">Cancelar</button>
+            <button class="btn btn-danger" id="btnConfirmarExclusao">🗑️ Excluir</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // ==================== CONFIG ====================
     const SUPABASE_URL = 'https://leofgfyskclkipwrafrz.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxlb2ZnZnlza2Nsa2lwd3JhZnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDcwMjUsImV4cCI6MjA5MDEyMzAyNX0.liy7RXaSoild0M3BUECwsMlIcXJJYYz_adxnP3wv1ok';
 
-    let currentUser = null;
+    const api = (path, opts = {}) => fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+        ...opts,
+        headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            ...(opts.headers || {})
+        }
+    });
+
+    let currentUser   = null;
     let todasOcorrencias = [];
+    let todosUsuarios    = [];
+    let todosLogs        = [];
 
     const pageTitles = {
-        registro: ['Registrar Ocorrência', 'Preencha os dados da ocorrência abaixo'],
-        lista:    ['Minhas Ocorrências',   'Ocorrências que você registrou'],
-        admin:    ['Painel Administrativo','Visão geral de todas as ocorrências']
+        registro: ['Registrar Ocorrência',   'Preencha os dados da ocorrência'],
+        lista:    ['Minhas Ocorrências',      'Ocorrências que você registrou'],
+        admin:    ['Painel Administrativo',   'Gestão completa do sistema']
     };
 
     // ==================== INIT ====================
@@ -1003,10 +811,10 @@
         if (saved) { currentUser = JSON.parse(saved); mostrarApp(); }
 
         setDataHoraAtual();
-
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
         document.getElementById('formOcorrencia').addEventListener('submit', handleSubmitOcorrencia);
         document.getElementById('formEditarStatus').addEventListener('submit', handleEditarStatus);
+        document.getElementById('formNovoUsuario').addEventListener('submit', handleSalvarUsuario);
     });
 
     function setDataHoraAtual() {
@@ -1018,48 +826,57 @@
     // ==================== AUTH ====================
     async function handleLogin(e) {
         e.preventDefault();
-        const email = document.getElementById('loginEmail').value.trim();
-        const senha = document.getElementById('loginSenha').value;
+        const btn = document.getElementById('btnLogin');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Entrando...';
+
+        const username = document.getElementById('loginUsername').value.trim();
+        const senha    = document.getElementById('loginSenha').value;
 
         try {
-            const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/professores?email=eq.${encodeURIComponent(email)}&senha=eq.${encodeURIComponent(senha)}&select=*`,
-                { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-            );
+            const res  = await api(`professores?username=eq.${encodeURIComponent(username)}&senha=eq.${encodeURIComponent(senha)}&select=*`);
             const users = await res.json();
 
             if (users && users.length > 0) {
                 currentUser = users[0];
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                registrarLog('login', `Login realizado pelo usuário ${currentUser.nome}`);
                 mostrarApp();
             } else {
-                alertaLogin('E-mail ou senha incorretos.', 'error');
+                alertaLogin('Usuário ou senha incorretos.', 'error');
             }
         } catch (err) {
             console.error(err);
             alertaLogin('Erro de conexão. Tente novamente.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'Entrar';
         }
     }
 
     function logout() {
+        registrarLog('logout', `Logout do usuário ${currentUser.nome}`);
         localStorage.removeItem('currentUser');
         currentUser = null;
         document.getElementById('mainApp').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginSenha').value = '';
     }
 
     function mostrarApp() {
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
 
-        const initial = currentUser.nome.charAt(0).toUpperCase();
-        document.getElementById('userAvatar').textContent = initial;
-        document.getElementById('userName').textContent = currentUser.nome;
-        document.getElementById('userRole').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Professor';
-        document.getElementById('nomeProfessor').value = currentUser.nome;
+        document.getElementById('userAvatar').textContent = currentUser.nome.charAt(0).toUpperCase();
+        document.getElementById('userName').textContent   = currentUser.nome;
+        document.getElementById('userRoleLabel').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Professor';
+        document.getElementById('nomeProfessor').value    = currentUser.nome;
 
         if (currentUser.role === 'admin') {
             document.getElementById('navAdmin').classList.remove('hidden');
+            const badge = document.getElementById('topbarBadge');
+            badge.innerHTML = `<span class="topbar-badge">🛡️ Admin</span>`;
         }
 
         carregarOcorrencias();
@@ -1069,31 +886,36 @@
     function showSection(name, btn) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-
         if (btn) btn.classList.add('active');
-        document.getElementById('sec' + capitalize(name)).classList.add('active');
+        document.getElementById('sec' + cap(name)).classList.add('active');
 
-        const [title, sub] = pageTitles[name] || ['', ''];
-        document.getElementById('pageTitle').textContent = title;
-        document.getElementById('pageSubtitle').textContent = sub;
+        const [t, s] = pageTitles[name] || ['', ''];
+        document.getElementById('pageTitle').textContent    = t;
+        document.getElementById('pageSubtitle').textContent = s;
 
         if (name === 'lista')  carregarMinhasOcorrencias();
-        if (name === 'admin')  carregarTodasOcorrencias();
+        if (name === 'admin')  carregarAdmin();
     }
 
-    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    function showAdminTab(tab, btn) {
+        document.querySelectorAll('.inner-tab').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('admin' + cap(tab)).classList.add('active');
+
+        if (tab === 'ocorrencias') carregarTodasOcorrencias();
+        if (tab === 'usuarios')    carregarUsuarios();
+        if (tab === 'logs')        carregarLogs();
+    }
+
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
     // ==================== OCORRÊNCIAS ====================
     async function carregarOcorrencias() {
         try {
-            const res = await fetch(
-                `${SUPABASE_URL}/rest/v1/ocorrencias?order=data_hora.desc&select=*`,
-                { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-            );
+            const res = await api('ocorrencias?order=data_hora.desc&select=*');
             todasOcorrencias = await res.json();
-        } catch (err) {
-            console.error('Erro ao carregar ocorrências:', err);
-        }
+        } catch (err) { console.error(err); }
     }
 
     async function handleSubmitOcorrencia(e) {
@@ -1114,19 +936,15 @@
         };
 
         try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/ocorrencias`, {
+            const res = await api('ocorrencias', {
                 method: 'POST',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=minimal'
-                },
+                headers: { 'Prefer': 'return=minimal' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
                 mostrarAlerta('Ocorrência registrada com sucesso!', 'success');
+                registrarLog('registro', `Ocorrência registrada para aluno: ${payload.nome_aluno} | Turma: ${payload.turma} | Tipo: ${payload.tipo_ocorrencia}`);
                 limparForm();
                 await carregarOcorrencias();
             } else {
@@ -1152,42 +970,37 @@
         renderTabela(todasOcorrencias, 'tabelaTodasOcorrencias', true);
     }
 
+    async function carregarAdmin() {
+        await carregarOcorrencias();
+        atualizarStats();
+        renderTabela(todasOcorrencias, 'tabelaTodasOcorrencias', true);
+    }
+
     function renderTabela(lista, containerId, isAdmin) {
         const container = document.getElementById(containerId);
-
         if (!lista || lista.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="icon">📋</div>
-                    <div class="title">Nenhuma ocorrência encontrada</div>
-                    <div class="sub">Não há ocorrências registradas ainda.</div>
-                </div>`;
+            container.innerHTML = `<div class="empty-state"><div class="icon">📋</div><div class="title">Nenhuma ocorrência encontrada</div><div class="sub">Não há registros para exibir.</div></div>`;
             return;
         }
-
         let html = `<table><thead><tr>
-            <th>Data / Hora</th>
-            <th>Aluno</th>
-            <th>Turma</th>
-            <th>Tipo</th>
+            <th>Data / Hora</th><th>Aluno</th><th>Turma</th><th>Tipo</th>
             ${isAdmin ? '<th>Professor</th>' : ''}
-            <th>Status</th>
-            <th style="width:80px">Ações</th>
+            <th>Status</th><th style="width:90px">Ações</th>
         </tr></thead><tbody>`;
 
         lista.forEach(oc => {
             const data = new Date(oc.data_hora).toLocaleString('pt-BR');
             html += `<tr>
-                <td style="white-space:nowrap;color:var(--text-muted);font-size:13px">${data}</td>
+                <td class="log-time">${data}</td>
                 <td><strong>${oc.nome_aluno}</strong></td>
                 <td>${oc.turma}</td>
                 <td>${badgeTipo(oc.tipo_ocorrencia)}</td>
                 ${isAdmin ? `<td>${oc.nome_professor}</td>` : ''}
                 <td>${badgeStatus(oc.status)}</td>
                 <td>
-                    <div style="display:flex;gap:6px">
-                        <button class="btn btn-icon-only" style="background:#EFF6FF;color:#1D4ED8" onclick="visualizarOcorrencia('${oc.id}')" title="Visualizar">👁</button>
-                        ${isAdmin ? `<button class="btn btn-icon-only" style="background:#FFF7ED;color:#C2410C" onclick="editarStatus('${oc.id}')" title="Editar status">✏️</button>` : ''}
+                    <div style="display:flex;gap:5px">
+                        <button class="btn btn-icon-only" style="background:#ede9fe;color:#4c1d95" onclick="visualizarOcorrencia('${oc.id}')" title="Visualizar">👁</button>
+                        ${isAdmin ? `<button class="btn btn-icon-only" style="background:var(--p3-light);color:var(--p3)" onclick="editarStatus('${oc.id}')" title="Editar status">✏️</button>` : ''}
                     </div>
                 </td>
             </tr>`;
@@ -1200,44 +1013,17 @@
     function visualizarOcorrencia(id) {
         const oc = todasOcorrencias.find(o => o.id === id);
         if (!oc) return;
-
         document.getElementById('modalVisualizarContent').innerHTML = `
             <div class="detail-grid">
-                <div class="detail-item">
-                    <div class="detail-label">Data e Hora</div>
-                    <div class="detail-value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Professor</div>
-                    <div class="detail-value">${oc.nome_professor}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Aluno</div>
-                    <div class="detail-value">${oc.nome_aluno}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Turma</div>
-                    <div class="detail-value">${oc.turma}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Tipo de Ocorrência</div>
-                    <div class="detail-value">${badgeTipo(oc.tipo_ocorrencia)}</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Status</div>
-                    <div class="detail-value">${badgeStatus(oc.status)}</div>
-                </div>
-                <div class="detail-item full">
-                    <div class="detail-label">Descrição</div>
-                    <div class="detail-value" style="white-space:pre-wrap">${oc.descricao}</div>
-                </div>
-                ${oc.acao_tomada ? `
-                <div class="detail-item full">
-                    <div class="detail-label">Ação Tomada</div>
-                    <div class="detail-value" style="white-space:pre-wrap">${oc.acao_tomada}</div>
-                </div>` : ''}
+                <div class="detail-item"><div class="detail-label">Data e Hora</div><div class="detail-value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div></div>
+                <div class="detail-item"><div class="detail-label">Professor</div><div class="detail-value">${oc.nome_professor}</div></div>
+                <div class="detail-item"><div class="detail-label">Aluno</div><div class="detail-value">${oc.nome_aluno}</div></div>
+                <div class="detail-item"><div class="detail-label">Turma</div><div class="detail-value">${oc.turma}</div></div>
+                <div class="detail-item"><div class="detail-label">Tipo</div><div class="detail-value">${badgeTipo(oc.tipo_ocorrencia)}</div></div>
+                <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${badgeStatus(oc.status)}</div></div>
+                <div class="detail-item full"><div class="detail-label">Descrição</div><div class="detail-value" style="white-space:pre-wrap">${oc.descricao}</div></div>
+                ${oc.acao_tomada ? `<div class="detail-item full"><div class="detail-label">Ação Tomada</div><div class="detail-value" style="white-space:pre-wrap">${oc.acao_tomada}</div></div>` : ''}
             </div>`;
-
         document.getElementById('modalVisualizar').classList.add('active');
     }
 
@@ -1253,21 +1039,17 @@
         e.preventDefault();
         const id     = document.getElementById('editarStatusId').value;
         const status = document.getElementById('novoStatus').value;
+        const oc     = todasOcorrencias.find(o => o.id === id);
 
         try {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/ocorrencias?id=eq.${id}`, {
+            const res = await api(`ocorrencias?id=eq.${id}`, {
                 method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=minimal'
-                },
+                headers: { 'Prefer': 'return=minimal' },
                 body: JSON.stringify({ status })
             });
-
             if (res.ok) {
                 mostrarAlerta('Status atualizado com sucesso!', 'success');
+                registrarLog('status', `Status da ocorrência de ${oc?.nome_aluno} alterado para: ${formatarStatus(status)}`);
                 fecharModal('modalEditarStatus');
                 carregarTodasOcorrencias();
             } else {
@@ -1279,27 +1061,255 @@
         }
     }
 
+    // ==================== STATS ====================
+    async function atualizarStats() {
+        const total    = todasOcorrencias.length;
+        const pend     = todasOcorrencias.filter(o => o.status === 'pendente').length;
+        const and      = todasOcorrencias.filter(o => o.status === 'em-andamento').length;
+        const res      = todasOcorrencias.filter(o => o.status === 'resolvida').length;
+        const inicio   = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        const mes      = todasOcorrencias.filter(o => new Date(o.data_hora) >= inicio).length;
+
+        // contar professores únicos
+        const profs = new Set(todasOcorrencias.map(o => o.nome_professor)).size;
+
+        document.getElementById('statTotal').textContent      = total;
+        document.getElementById('statPendentes').textContent  = pend;
+        document.getElementById('statAndamento').textContent  = and;
+        document.getElementById('statResolvidas').textContent = res;
+        document.getElementById('statMes').textContent        = mes;
+        document.getElementById('statProfessores').textContent= profs;
+    }
+
+    // ==================== USUÁRIOS ====================
+    async function carregarUsuarios() {
+        try {
+            const res = await api('professores?order=criado_em.desc&select=*');
+            todosUsuarios = await res.json();
+            renderUsuarios(todosUsuarios);
+        } catch (err) { console.error(err); }
+    }
+
+    function renderUsuarios(lista) {
+        const container = document.getElementById('tabelaUsuarios');
+        if (!lista || lista.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">👥</div><div class="title">Nenhum usuário</div></div>`;
+            return;
+        }
+        let html = `<table><thead><tr>
+            <th>Nome</th><th>Usuário</th><th>Perfil</th><th>Criado em</th><th style="width:100px">Ações</th>
+        </tr></thead><tbody>`;
+
+        lista.forEach(u => {
+            const dt = u.criado_em ? new Date(u.criado_em).toLocaleDateString('pt-BR') : '—';
+            const isSelf = u.id === currentUser.id;
+            html += `<tr>
+                <td><strong>${u.nome}</strong></td>
+                <td style="color:var(--text-muted);font-family:monospace">${u.username || '—'}</td>
+                <td>${u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
+                <td class="log-time">${dt}</td>
+                <td>
+                    <div style="display:flex;gap:5px">
+                        <button class="btn btn-icon-only" style="background:#ede9fe;color:#4c1d95" onclick="abrirModalEditarUsuario('${u.id}')" title="Editar">✏️</button>
+                        ${!isSelf ? `<button class="btn btn-icon-only" style="background:var(--p3-light);color:var(--p3)" onclick="confirmarExclusao('${u.id}')" title="Excluir">🗑️</button>` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function abrirModalNovoUsuario() {
+        document.getElementById('editUserId').value = '';
+        document.getElementById('modalUsuarioTitulo').textContent = 'Novo Usuário';
+        document.getElementById('formNovoUsuario').reset();
+        document.getElementById('novoRole').value = 'professor';
+        document.getElementById('senhaGroup').querySelector('input').required = true;
+        selectRole('professor');
+        document.getElementById('modalNovoUsuario').classList.add('active');
+    }
+
+    function abrirModalEditarUsuario(id) {
+        const u = todosUsuarios.find(x => x.id === id);
+        if (!u) return;
+        document.getElementById('editUserId').value   = id;
+        document.getElementById('modalUsuarioTitulo').textContent = 'Editar Usuário';
+        document.getElementById('novoNome').value     = u.nome;
+        document.getElementById('novoUsername').value = u.username || '';
+        document.getElementById('novaSenha').value    = '';
+        document.getElementById('senhaGroup').querySelector('input').required = false;
+        document.getElementById('novoRole').value     = u.role;
+        selectRole(u.role);
+        document.getElementById('modalNovoUsuario').classList.add('active');
+    }
+
+    async function handleSalvarUsuario(e) {
+        e.preventDefault();
+        const btn   = document.getElementById('btnSalvarUsuario');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>';
+
+        const id       = document.getElementById('editUserId').value;
+        const nome     = document.getElementById('novoNome').value.trim();
+        const username = document.getElementById('novoUsername').value.trim().toLowerCase();
+        const senha    = document.getElementById('novaSenha').value;
+        const role     = document.getElementById('novoRole').value;
+
+        const payload = { nome, username, role };
+        if (senha) payload.senha = senha;
+
+        try {
+            let res;
+            if (id) {
+                res = await api(`professores?id=eq.${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                if (!senha) { mostrarAlerta('Informe uma senha para o novo usuário.', 'error'); return; }
+                payload.senha = senha;
+                res = await api('professores', {
+                    method: 'POST',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify(payload)
+                });
+            }
+
+            if (res.ok) {
+                const acao = id ? 'editado' : 'criado';
+                mostrarAlerta(`Usuário ${acao} com sucesso!`, 'success');
+                registrarLog('usuario_criado', `Usuário ${nome} (${username}) ${acao} com perfil: ${role}`);
+                fecharModal('modalNovoUsuario');
+                carregarUsuarios();
+            } else {
+                const err = await res.json();
+                mostrarAlerta(err.message || 'Erro ao salvar usuário.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            mostrarAlerta('Erro de conexão.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '💾 Salvar';
+        }
+    }
+
+    function confirmarExclusao(id) {
+        document.getElementById('modalConfirmar').classList.add('active');
+        document.getElementById('btnConfirmarExclusao').onclick = () => excluirUsuario(id);
+    }
+
+    async function excluirUsuario(id) {
+        const u = todosUsuarios.find(x => x.id === id);
+        try {
+            const res = await api(`professores?id=eq.${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                mostrarAlerta('Usuário excluído.', 'success');
+                registrarLog('usuario_excluido', `Usuário ${u?.nome} (${u?.username}) foi excluído`);
+                fecharModal('modalConfirmar');
+                carregarUsuarios();
+            } else {
+                mostrarAlerta('Erro ao excluir usuário.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function selectRole(role) {
+        document.getElementById('novoRole').value = role;
+        document.getElementById('pillProfessor').classList.toggle('selected', role === 'professor');
+        document.getElementById('pillAdmin').classList.toggle('selected', role === 'admin');
+    }
+
+    // ==================== LOGS ====================
+    async function carregarLogs() {
+        try {
+            const res = await api('logs?order=criado_em.desc&limit=200&select=*');
+            todosLogs = await res.json();
+            renderLogs(todosLogs);
+        } catch (err) { console.error(err); }
+    }
+
+    function renderLogs(lista) {
+        const container = document.getElementById('tabelaLogs');
+        if (!lista || lista.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">📜</div><div class="title">Nenhum log registrado</div></div>`;
+            return;
+        }
+
+        const icones = { login:'🔑', logout:'🚪', registro:'📝', status:'🔄', usuario_criado:'👤', usuario_excluido:'🗑️' };
+
+        let html = `<table><thead><tr>
+            <th>Data / Hora</th><th>Usuário</th><th>Perfil</th><th>Ação</th><th>Detalhes</th>
+        </tr></thead><tbody>`;
+
+        lista.forEach(l => {
+            const dt  = new Date(l.criado_em).toLocaleString('pt-BR');
+            const ico = icones[l.acao] || '•';
+            html += `<tr class="log-row">
+                <td class="log-time">${dt}</td>
+                <td><strong>${l.usuario_nome}</strong></td>
+                <td>${l.usuario_role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
+                <td>${ico} ${formatarAcao(l.acao)}</td>
+                <td style="color:var(--text-muted);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${l.detalhes || ''}">${l.detalhes || '—'}</td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    function aplicarFiltrosLog() {
+        const usuario = document.getElementById('logFiltroUsuario').value.toLowerCase();
+        const acao    = document.getElementById('logFiltroAcao').value;
+        const filtrados = todosLogs.filter(l =>
+            (!usuario || l.usuario_nome.toLowerCase().includes(usuario)) &&
+            (!acao    || l.acao === acao)
+        );
+        renderLogs(filtrados);
+    }
+
+    function limparFiltrosLog() {
+        document.getElementById('logFiltroUsuario').value = '';
+        document.getElementById('logFiltroAcao').value    = '';
+        renderLogs(todosLogs);
+    }
+
+    async function registrarLog(acao, detalhes) {
+        if (!currentUser) return;
+        try {
+            await api('logs', {
+                method: 'POST',
+                headers: { 'Prefer': 'return=minimal' },
+                body: JSON.stringify({
+                    usuario_nome: currentUser.nome,
+                    usuario_role: currentUser.role,
+                    acao,
+                    detalhes
+                })
+            });
+        } catch (err) { console.error('Erro ao registrar log:', err); }
+    }
+
     // ==================== FILTROS ====================
     function aplicarFiltros() {
         const aluno = document.getElementById('filtroAluno').value.toLowerCase();
         const turma = document.getElementById('filtroTurma').value.toLowerCase();
         const tipo  = document.getElementById('filtroTipo').value;
-
         const minhas = todasOcorrencias.filter(o => o.nome_professor === currentUser.nome);
-        const filtradas = minhas.filter(oc =>
+        renderTabela(minhas.filter(oc =>
             (!aluno || oc.nome_aluno.toLowerCase().includes(aluno)) &&
             (!turma || oc.turma.toLowerCase().includes(turma)) &&
             (!tipo  || oc.tipo_ocorrencia === tipo)
-        );
-        renderTabela(filtradas, 'tabelaMinhasOcorrencias', false);
+        ), 'tabelaMinhasOcorrencias', false);
     }
 
     function limparFiltros() {
-        ['filtroAluno','filtroTurma','filtroTipo'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el.tagName === 'SELECT') el.value = '';
-            else el.value = '';
-        });
+        ['filtroAluno','filtroTurma','filtroTipo'].forEach(id => document.getElementById(id).value = '');
         carregarMinhasOcorrencias();
     }
 
@@ -1308,46 +1318,26 @@
         const professor = document.getElementById('adminFiltroProfessor').value.toLowerCase();
         const tipo      = document.getElementById('adminFiltroTipo').value;
         const status    = document.getElementById('adminFiltroStatus').value;
-
-        const filtradas = todasOcorrencias.filter(oc =>
+        renderTabela(todasOcorrencias.filter(oc =>
             (!aluno     || oc.nome_aluno.toLowerCase().includes(aluno)) &&
             (!professor || oc.nome_professor.toLowerCase().includes(professor)) &&
             (!tipo      || oc.tipo_ocorrencia === tipo) &&
             (!status    || oc.status === status)
-        );
-        renderTabela(filtradas, 'tabelaTodasOcorrencias', true);
+        ), 'tabelaTodasOcorrencias', true);
     }
 
     function limparFiltrosAdmin() {
-        ['adminFiltroAluno','adminFiltroProfessor','adminFiltroTipo','adminFiltroStatus'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
+        ['adminFiltroAluno','adminFiltroProfessor','adminFiltroTipo','adminFiltroStatus'].forEach(id => document.getElementById(id).value = '');
         carregarTodasOcorrencias();
-    }
-
-    // ==================== STATS ====================
-    function atualizarStats() {
-        const total     = todasOcorrencias.length;
-        const pendentes = todasOcorrencias.filter(o => o.status === 'pendente').length;
-        const resolv    = todasOcorrencias.filter(o => o.status === 'resolvida').length;
-        const inicio    = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        const mes       = todasOcorrencias.filter(o => new Date(o.data_hora) >= inicio).length;
-
-        document.getElementById('statTotal').textContent     = total;
-        document.getElementById('statPendentes').textContent = pendentes;
-        document.getElementById('statResolvidas').textContent= resolv;
-        document.getElementById('statMes').textContent       = mes;
     }
 
     // ==================== EXPORT ====================
     function exportarOcorrencias() {
         exportCSV(todasOcorrencias.filter(o => o.nome_professor === currentUser.nome), 'minhas_ocorrencias');
     }
-
     function exportarTodasOcorrencias() {
         exportCSV(todasOcorrencias, 'todas_ocorrencias');
     }
-
     function exportCSV(dados, nome) {
         const h = ['Data/Hora','Professor','Aluno','Turma','Tipo','Descrição','Ação Tomada','Status'];
         const rows = dados.map(oc => [
@@ -1371,12 +1361,10 @@
         document.getElementById('nomeProfessor').value = currentUser.nome;
     }
 
-    function fecharModal(id) {
-        document.getElementById(id).classList.remove('active');
-    }
+    function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
 
     function mostrarAlerta(msg, tipo) {
-        const c = document.getElementById('alertContainer');
+        const c  = document.getElementById('alertContainer');
         const el = document.createElement('div');
         el.className = `alert alert-${tipo}`;
         el.innerHTML = `<span>${tipo === 'success' ? '✅' : '❌'}</span> ${msg}`;
@@ -1409,6 +1397,11 @@
     function formatarStatus(s) {
         const map = { 'pendente':'Pendente', 'em-andamento':'Em Andamento', 'resolvida':'Resolvida' };
         return map[s] || s;
+    }
+
+    function formatarAcao(a) {
+        const map = { login:'Login', logout:'Logout', registro:'Registro de Ocorrência', status:'Atualização de Status', usuario_criado:'Usuário Criado/Editado', usuario_excluido:'Usuário Excluído' };
+        return map[a] || a;
     }
 
     window.onclick = e => {
