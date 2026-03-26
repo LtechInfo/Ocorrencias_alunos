@@ -425,6 +425,11 @@
                     <span class="nav-icon">👁️</span> Visualizar Ocorrências
                 </button>
 
+                <div class="nav-label" style="margin-top:20px">Conta</div>
+                <button class="nav-item" onclick="abrirTrocarSenha()">
+                    <span class="nav-icon">🔑</span> Trocar Senha
+                </button>
+
                 <button class="nav-item hidden" onclick="showSection('admin', this)" id="navAdmin">
                     <span class="nav-icon">🛡️</span> Painel Administrativo
                 </button>
@@ -499,29 +504,29 @@
                                     <label>Ocorrência <span class="required">*</span></label>
                                     <select id="tipoOcorrencia" required>
                                         <option value="">Escolher</option>
-                                        <option value="DANIFICOU OBJETOS E/OU LOCAIS DO COLÉGIO">DANIFICOU OBJETOS E/OU LOCAIS DO COLÉGIO</option>
-                                        <option value="APOSTILA INCOMPLETA">APOSTILA INCOMPLETA</option>
-                                        <option value="LIÇÃO DE CASA INCOMPLETA">LIÇÃO DE CASA INCOMPLETA</option>
-                                        <option value="NÃO COPIOU A LIÇÃO">NÃO COPIOU A LIÇÃO</option>
-                                        <option value="NÃO ENTREGOU A ATIVIDADE">NÃO ENTREGOU A ATIVIDADE</option>
-                                        <option value="NÃO ENTREGOU A AVALIAÇÃO ASSINADA">NÃO ENTREGOU A AVALIAÇÃO ASSINADA</option>
-                                        <option value="NÃO ENTREGOU O TRABALHO">NÃO ENTREGOU O TRABALHO</option>
-                                        <option value="NÃO FEZ EXERCÍCIO EM SALA DE AULA">NÃO FEZ EXERCÍCIO EM SALA DE AULA</option>
-                                        <option value="NÃO PARTICIPA DAS AULAS">NÃO PARTICIPA DAS AULAS</option>
-                                        <option value="NÃO REALIZOU A LIÇÃO DE CASA">NÃO REALIZOU A LIÇÃO DE CASA</option>
-                                        <option value="NÃO TROUXE APOSTILA">NÃO TROUXE APOSTILA</option>
-                                        <option value="NÃO TROUXE MATERIAL SOLICITADO">NÃO TROUXE MATERIAL SOLICITADO</option>
-                                        <option value="NECESSITA DE AUXÍLIO DURANTE A REALIZAÇÃO DOS EXERCÍCIOS">NECESSITA DE AUXÍLIO DURANTE A REALIZAÇÃO DOS EXERCÍCIOS</option>
-                                        <option value="AGREDIR FISICAMENTE O COLEGA">AGREDIR FISICAMENTE O COLEGA</option>
-                                        <option value="AGREDIR VERBALMENTE O COLEGA">AGREDIR VERBALMENTE O COLEGA</option>
-                                        <option value="CHEGADA ATRASADA">CHEGADA ATRASADA</option>
-                                        <option value="DANIFICAR A MOBÍLIA DA SALA">DANIFICAR A MOBÍLIA DA SALA</option>
-                                        <option value="DESACATAR O PROFESSOR">DESACATAR O PROFESSOR</option>
-                                        <option value="ENTRADA ATRASADA">ENTRADA ATRASADA</option>
-                                        <option value="IMPEDIU O PROFESSOR DE DAR A AULA">IMPEDIU O PROFESSOR DE DAR A AULA</option>
-                                        <option value="NÃO RESPEITAR AS REGRAS DO COLÉGIO">NÃO RESPEITAR AS REGRAS DO COLÉGIO</option>
-                                        <option value="NÃO USOU UNIFORME">NÃO USOU UNIFORME</option>
-                                        <option value="USOU O CELULAR DURANTE A AULA">USOU O CELULAR DURANTE A AULA</option>
+                                        <option value="192 - DANIFICOU OBJETOS E/OU LOCAIS DO COLÉGIO">192 - DANIFICOU OBJETOS E/OU LOCAIS DO COLÉGIO</option>
+                                        <option value="174 - APOSTILA INCOMPLETA">174 - APOSTILA INCOMPLETA</option>
+                                        <option value="9 - LIÇÃO DE CASA INCOMPLETA">9 - LIÇÃO DE CASA INCOMPLETA</option>
+                                        <option value="188 - NÃO COPIOU A LIÇÃO">188 - NÃO COPIOU A LIÇÃO</option>
+                                        <option value="7 - NÃO ENTREGOU A ATIVIDADE">7 - NÃO ENTREGOU A ATIVIDADE</option>
+                                        <option value="12 - NÃO ENTREGOU A AVALIAÇÃO ASSINADA">12 - NÃO ENTREGOU A AVALIAÇÃO ASSINADA</option>
+                                        <option value="6 - NÃO ENTREGOU O TRABALHO">6 - NÃO ENTREGOU O TRABALHO</option>
+                                        <option value="10 - NÃO FEZ EXERCÍCIO EM SALA DE AULA">10 - NÃO FEZ EXERCÍCIO EM SALA DE AULA</option>
+                                        <option value="133 - NÃO PARTICIPA DAS AULAS">133 - NÃO PARTICIPA DAS AULAS</option>
+                                        <option value="8 - NÃO REALIZOU A LIÇÃO DE CASA">8 - NÃO REALIZOU A LIÇÃO DE CASA</option>
+                                        <option value="14 - NÃO TROUXE APOSTILA">14 - NÃO TROUXE APOSTILA</option>
+                                        <option value="11 - NÃO TROUXE MATERIAL SOLICITADO">11 - NÃO TROUXE MATERIAL SOLICITADO</option>
+                                        <option value="13 - NECESSITA DE AUXÍLIO DURANTE A REALIZAÇÃO DOS EXERCÍCIOS">13 - NECESSITA DE AUXÍLIO DURANTE A REALIZAÇÃO DOS EXERCÍCIOS</option>
+                                        <option value="18 - AGREDIR FISICAMENTE O COLEGA">18 - AGREDIR FISICAMENTE O COLEGA</option>
+                                        <option value="16 - AGREDIR VERBALMENTE O COLEGA">16 - AGREDIR VERBALMENTE O COLEGA</option>
+                                        <option value="139 - CHEGADA ATRASADA">139 - CHEGADA ATRASADA</option>
+                                        <option value="19 - DANIFICAR A MOBÍLIA DA SALA">19 - DANIFICAR A MOBÍLIA DA SALA</option>
+                                        <option value="15 - DESACATAR O PROFESSOR">15 - DESACATAR O PROFESSOR</option>
+                                        <option value="141 - ENTRADA ATRASADA">141 - ENTRADA ATRASADA</option>
+                                        <option value="20 - IMPEDIU O PROFESSOR DE DAR A AULA">20 - IMPEDIU O PROFESSOR DE DAR A AULA</option>
+                                        <option value="17 - NÃO RESPEITAR AS REGRAS DO COLÉGIO">17 - NÃO RESPEITAR AS REGRAS DO COLÉGIO</option>
+                                        <option value="137 - NÃO USOU UNIFORME">137 - NÃO USOU UNIFORME</option>
+                                        <option value="21 - USOU O CELULAR DURANTE A AULA">21 - USOU O CELULAR DURANTE A AULA</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-2">
@@ -751,6 +756,7 @@
                                         <option value="status">Atualização de Status</option>
                                         <option value="usuario_criado">Usuário Criado</option>
                                         <option value="usuario_excluido">Usuário Excluído</option>
+                                        <option value="troca_senha">Troca de Senha</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
@@ -849,6 +855,60 @@
     </div>
 </div>
 
+<!-- MODAL: TROCA DE SENHA OBRIGATÓRIA (primeiro login) -->
+<div id="modalTrocarSenhaObrig" class="modal">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h3>🔐 Defina sua Senha</h3>
+        </div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px">
+            Este é seu primeiro acesso. Por segurança, você precisa criar uma nova senha antes de continuar.
+        </p>
+        <form id="formSenhaObrig">
+            <div class="form-group">
+                <label>Nova Senha <span class="required">*</span></label>
+                <input type="password" id="novaSenhaObrig" required placeholder="Mínimo 6 caracteres" minlength="6">
+            </div>
+            <div class="form-group">
+                <label>Confirmar Senha <span class="required">*</span></label>
+                <input type="password" id="confirmarSenhaObrig" required placeholder="Repita a nova senha">
+            </div>
+            <div class="form-actions" style="justify-content:flex-end">
+                <button type="submit" class="btn btn-primary" id="btnSalvarSenhaObrig">✅ Salvar e Continuar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: TROCAR SENHA VOLUNTÁRIA -->
+<div id="modalTrocarSenha" class="modal">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h3>🔑 Trocar Senha</h3>
+            <button class="btn-modal-close" onclick="fecharModal('modalTrocarSenha')">×</button>
+        </div>
+        <form id="formTrocarSenha">
+            <div class="form-group">
+                <label>Senha Atual <span class="required">*</span></label>
+                <input type="password" id="senhaAtual" required placeholder="Digite sua senha atual">
+            </div>
+            <div class="form-group">
+                <label>Nova Senha <span class="required">*</span></label>
+                <input type="password" id="novaSenhaVolunt" required placeholder="Mínimo 6 caracteres" minlength="6">
+            </div>
+            <div class="form-group">
+                <label>Confirmar Nova Senha <span class="required">*</span></label>
+                <input type="password" id="confirmarSenhaVolunt" required placeholder="Repita a nova senha">
+            </div>
+            <div id="alertTrocarSenha"></div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-ghost" onclick="fecharModal('modalTrocarSenha')">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btnSalvarSenhaVolunt">💾 Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- MODAL: CONFIRMAR EXCLUSÃO -->
 <div id="modalConfirmar" class="modal">
     <div class="modal-box modal-box-sm">
@@ -903,6 +963,8 @@
         document.getElementById('formOcorrencia').addEventListener('submit', handleSubmitOcorrencia);
         document.getElementById('formEditarStatus').addEventListener('submit', handleEditarStatus);
         document.getElementById('formNovoUsuario').addEventListener('submit', handleSalvarUsuario);
+        document.getElementById('formSenhaObrig').addEventListener('submit', handleSenhaObrig);
+        document.getElementById('formTrocarSenha').addEventListener('submit', handleTrocarSenha);
     });
 
     function setDataHoraAtual() {
@@ -972,6 +1034,106 @@
         }
 
         carregarOcorrencias();
+
+        // Forçar troca de senha no primeiro login
+        if (currentUser.deve_trocar_senha) {
+            setTimeout(() => {
+                document.getElementById('modalTrocarSenhaObrig').classList.add('active');
+            }, 300);
+        }
+    }
+
+    // ==================== TROCA DE SENHA ====================
+    async function handleSenhaObrig(e) {
+        e.preventDefault();
+        const nova     = document.getElementById('novaSenhaObrig').value;
+        const confirma = document.getElementById('confirmarSenhaObrig').value;
+        const btn      = document.getElementById('btnSalvarSenhaObrig');
+
+        if (nova !== confirma) {
+            alert('As senhas não coincidem.'); return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>';
+
+        try {
+            const res = await api(`professores?id=eq.${currentUser.id}`, {
+                method: 'PATCH',
+                headers: { 'Prefer': 'return=minimal' },
+                body: JSON.stringify({ senha: nova, deve_trocar_senha: false })
+            });
+
+            if (res.ok) {
+                currentUser.senha = nova;
+                currentUser.deve_trocar_senha = false;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                fecharModal('modalTrocarSenhaObrig');
+                mostrarAlerta('Senha definida com sucesso! Bem-vindo(a)!', 'success');
+                registrarLog('troca_senha', 'Senha definida no primeiro acesso');
+            } else {
+                alert('Erro ao salvar senha. Tente novamente.');
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '✅ Salvar e Continuar';
+        }
+    }
+
+    function abrirTrocarSenha() {
+        document.getElementById('formTrocarSenha').reset();
+        document.getElementById('alertTrocarSenha').innerHTML = '';
+        document.getElementById('modalTrocarSenha').classList.add('active');
+    }
+
+    async function handleTrocarSenha(e) {
+        e.preventDefault();
+        const atual    = document.getElementById('senhaAtual').value;
+        const nova     = document.getElementById('novaSenhaVolunt').value;
+        const confirma = document.getElementById('confirmarSenhaVolunt').value;
+        const btn      = document.getElementById('btnSalvarSenhaVolunt');
+        const alerta   = document.getElementById('alertTrocarSenha');
+
+        if (atual !== currentUser.senha) {
+            alerta.innerHTML = `<div class="alert alert-error"><span>❌</span> Senha atual incorreta.</div>`;
+            return;
+        }
+        if (nova !== confirma) {
+            alerta.innerHTML = `<div class="alert alert-error"><span>❌</span> As senhas não coincidem.</div>`;
+            return;
+        }
+        if (nova === atual) {
+            alerta.innerHTML = `<div class="alert alert-error"><span>❌</span> A nova senha deve ser diferente da atual.</div>`;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>';
+
+        try {
+            const res = await api(`professores?id=eq.${currentUser.id}`, {
+                method: 'PATCH',
+                headers: { 'Prefer': 'return=minimal' },
+                body: JSON.stringify({ senha: nova })
+            });
+
+            if (res.ok) {
+                currentUser.senha = nova;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                fecharModal('modalTrocarSenha');
+                mostrarAlerta('Senha alterada com sucesso!', 'success');
+                registrarLog('troca_senha', 'Usuário alterou a própria senha');
+            } else {
+                alerta.innerHTML = `<div class="alert alert-error"><span>❌</span> Erro ao salvar. Tente novamente.</div>`;
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '💾 Salvar';
+        }
     }
 
     // ==================== NAVEGAÇÃO ====================
@@ -1518,7 +1680,7 @@
     }
 
     function formatarAcao(a) {
-        const map = { login:'Login', logout:'Logout', registro:'Registro de Ocorrência', status:'Atualização de Status', usuario_criado:'Usuário Criado/Editado', usuario_excluido:'Usuário Excluído' };
+        const map = { login:'Login', logout:'Logout', registro:'Registro de Ocorrência', status:'Atualização de Status', usuario_criado:'Usuário Criado/Editado', usuario_excluido:'Usuário Excluído', troca_senha:'Troca de Senha' };
         return map[a] || a;
     }
 
