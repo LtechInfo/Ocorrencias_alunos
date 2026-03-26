@@ -112,7 +112,7 @@
             display: flex; align-items: center; gap: 10px;
         }
 
-        .sidebar-brand img { height: 32px; filter: brightness(0) invert(1); }
+        .sidebar-brand img { height: 100px; filter: brightness(0) invert(1); }
 
         .sidebar-nav { flex: 1; padding: 16px 10px; overflow-y: auto; }
 
@@ -532,10 +532,6 @@
                                 <div class="form-group col-2">
                                     <label>Descrição <span class="required">*</span></label>
                                     <textarea id="descricao" required placeholder="Descreva detalhadamente o ocorrido..."></textarea>
-                                </div>
-                                <div class="form-group col-2">
-                                    <label>Ação Tomada <small style="color:var(--text-muted);font-weight:400">(opcional)</small></label>
-                                    <textarea id="acaoTomada" placeholder="Descreva as ações tomadas..."></textarea>
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -1186,7 +1182,6 @@
             turma:           document.getElementById('turma').value,
             tipo_ocorrencia: document.getElementById('tipoOcorrencia').value,
             descricao:       document.getElementById('descricao').value,
-            acao_tomada:     document.getElementById('acaoTomada').value,
             status:          'pendente'
         };
 
@@ -1264,7 +1259,7 @@
         let html = `<table><thead><tr>
             <th>Data / Hora</th><th>Aluno</th><th>Turma</th><th>Ocorrência</th>
             ${mostrarProf ? '<th>Professor</th>' : ''}
-            <th>Status</th><th style="width:60px">Ver</th>
+            ${isAdmin ? '<th>Status</th><th style="width:90px">Ações</th>' : '<th style="width:60px">Ver</th>'}
         </tr></thead><tbody>`;
 
         lista.forEach(oc => {
@@ -1275,11 +1270,11 @@
                 <td>${oc.turma}</td>
                 <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${oc.tipo_ocorrencia}">${oc.tipo_ocorrencia}</td>
                 ${mostrarProf ? `<td>${oc.nome_professor}</td>` : ''}
-                <td>${badgeStatus(oc.status)}</td>
+                ${isAdmin ? `<td>${badgeStatus(oc.status)}</td>` : ''}
                 <td>
                     <div style="display:flex;gap:5px">
                         <button class="btn btn-icon-only" style="background:#ede9fe;color:#4c1d95" onclick="visualizarOcorrencia('${oc.id}')" title="Visualizar">👁</button>
-                        ${isAdmin ? `<button class="btn btn-icon-only" style="background:var(--p3-light);color:var(--p3)" onclick="editarStatus('${oc.id}')" title="Editar status">✏️</button>` : ''}
+                        ${isAdmin ? `<button class="btn btn-icon-only" style="background:var(--p3-light);color:var(--p3)" onclick="editarStatus('${oc.id}')" title="Dar baixa">✏️</button>` : ''}
                     </div>
                 </td>
             </tr>`;
