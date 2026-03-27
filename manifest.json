@@ -1,0 +1,24 @@
+{
+  "name": "Ocorrências ENAU",
+  "short_name": "ENAU",
+  "description": "Sistema de Ocorrências do Colégio ENAU",
+  "start_url": "./ocorrencias_enau.html",
+  "display": "standalone",
+  "background_color": "#4A1456",
+  "theme_color": "#4A1456",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "FAVICONMOBILE.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "FAVICONMOBILE.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
