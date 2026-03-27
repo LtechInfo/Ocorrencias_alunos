@@ -1534,7 +1534,7 @@
         </tr></thead><tbody>`;
 
         slice.forEach(oc => {
-            const data = new Date(oc.data_hora).toLocaleString('pt-BR');
+            const data = new Date(oc.data_hora).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'});
             html += `<tr>
                 <td class="log-time">${data}</td>
                 <td><strong>${oc.nome_aluno}</strong></td>
@@ -1624,7 +1624,7 @@
         if (!oc) return;
         document.getElementById('modalVisualizarContent').innerHTML = `
             <div class="detail-grid">
-                <div class="detail-item"><div class="detail-label">Data e Hora</div><div class="detail-value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div></div>
+                <div class="detail-item"><div class="detail-label">Data e Hora</div><div class="detail-value">${new Date(oc.data_hora).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'})}</div></div>
                 <div class="detail-item"><div class="detail-label">Professor</div><div class="detail-value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
                 <div class="detail-item"><div class="detail-label">Aluno</div><div class="detail-value">${oc.nome_aluno}</div></div>
                 <div class="detail-item"><div class="detail-label">Turma</div><div class="detail-value">${oc.turma}</div></div>
@@ -1748,7 +1748,7 @@
         </tr></thead><tbody>`;
 
         slice.forEach(u => {
-            const dt = u.criado_em ? new Date(u.criado_em).toLocaleDateString('pt-BR') : '—';
+            const dt = u.criado_em ? new Date(u.criado_em).toLocaleDateString('pt-BR', {timeZone:'America/Sao_Paulo'}) : '—';
             const isSelf = u.id === currentUser.id;
             html += `<tr>
                 <td><strong>${u.nome}</strong></td>
@@ -1906,7 +1906,7 @@
         </tr></thead><tbody>`;
 
         slice.forEach(l => {
-            const dt  = new Date(l.criado_em).toLocaleString('pt-BR');
+            const dt  = new Date(l.criado_em).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'});
             const ico = icones[l.acao] || '•';
             html += `<tr class="log-row">
                 <td class="log-time">${dt}</td>
@@ -2007,7 +2007,7 @@
     function exportCSV(dados, nome) {
         const h = ['Data/Hora','Professor','Aluno','Turma','Tipo','Descrição','Ação Tomada','Status'];
         const rows = dados.map(oc => [
-            new Date(oc.data_hora).toLocaleString('pt-BR'),
+            new Date(oc.data_hora).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'}),
             oc.nome_professor, oc.nome_aluno, oc.turma,
             formatarTipo(oc.tipo_ocorrencia), oc.descricao,
             oc.acao_tomada || '', formatarStatus(oc.status)
@@ -2081,7 +2081,7 @@
     @media print{button{display:none}}</style></head><body>
     <h2>Ocorrência Escolar</h2><p class="sub">Colégio ENAU — Sistema de Ocorrências</p>
     <div class="grid">
-    <div class="item"><div class="label">Data e Hora</div><div class="value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div></div>
+    <div class="item"><div class="label">Data e Hora</div><div class="value">${new Date(oc.data_hora).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'})}</div></div>
     <div class="item"><div class="label">Professor</div><div class="value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:#888;margin-top:3px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
     <div class="item"><div class="label">Aluno(s)</div><div class="value">${oc.nome_aluno}</div></div>
     <div class="item"><div class="label">Turma</div><div class="value">${oc.turma}</div></div>
@@ -2089,7 +2089,7 @@
     <div class="item full"><div class="label">Descrição</div><div class="value" style="white-space:pre-wrap">${oc.descricao}</div></div>
     <div class="item"><div class="label">Status</div><div class="value">${oc.status}</div></div>
     </div>
-    <div class="footer">Impresso em ${new Date().toLocaleString('pt-BR')} — ENAU Sistema de Ocorrências</div>
+    <div class="footer">Impresso em ${new Date().toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'})} — ENAU Sistema de Ocorrências</div>
     <br><button onclick="window.print()">Imprimir</button>
     </body></html>`);
         win.document.close();
