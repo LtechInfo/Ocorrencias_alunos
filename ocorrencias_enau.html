@@ -606,6 +606,9 @@
                                 <div class="form-group">
                                     <label>Professor <span class="required">*</span></label>
                                     <input type="text" id="nomeProfessor" required placeholder="Seu nome completo">
+                                    <span id="nomeProfessorAviso" style="display:none;font-size:11px;color:var(--warning);margin-top:4px;display:none">
+                                        ⚠️ Registrando em nome de outro professor. O lançamento ficará vinculado a você.
+                                    </span>
                                 </div>
                                 <div class="form-group">
                                     <label>Data e Hora <span class="required">*</span></label>
@@ -1243,7 +1246,21 @@
         document.getElementById('userName').textContent   = currentUser.nome;
         const roleLabels = { admin: 'Administrador', coordenacao: 'Coordenação', professor: 'Professor' };
         document.getElementById('userRoleLabel').textContent = roleLabels[currentUser.role] || 'Professor';
-        document.getElementById('nomeProfessor').value    = currentUser.nome;
+        const campoProfessor = document.getElementById('nomeProfessor');
+        campoProfessor.value = currentUser.nome;
+        if (currentUser.role === 'professor') {
+            campoProfessor.readOnly = true;
+            campoProfessor.style.background = 'var(--bg)';
+            campoProfessor.style.cursor = 'not-allowed';
+        } else {
+            campoProfessor.readOnly = false;
+            campoProfessor.style.background = '';
+            campoProfessor.style.cursor = '';
+            campoProfessor.addEventListener('input', () => {
+                const aviso = document.getElementById('nomeProfessorAviso');
+                aviso.style.display = campoProfessor.value.trim() !== currentUser.nome ? 'block' : 'none';
+            });
+        }
 
         if (currentUser.role === 'admin') {
             document.getElementById('navAdmin').classList.remove('hidden');
@@ -1407,9 +1424,11 @@
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner"></span> Salvando...';
 
+        const nomeProfCampo = document.getElementById('nomeProfessor').value.trim();
         const payload = {
             data_hora:       document.getElementById('dataHora').value,
-            nome_professor:  document.getElementById('nomeProfessor').value,
+            nome_professor:  nomeProfCampo,
+            postado_por:     currentUser.nome,
             nome_aluno:      document.getElementById('nomeAluno').value,
             turma:           document.getElementById('turma').value,
             tipo_ocorrencia: document.getElementById('tipoOcorrencia').value,
@@ -1606,7 +1625,7 @@
         document.getElementById('modalVisualizarContent').innerHTML = `
             <div class="detail-grid">
                 <div class="detail-item"><div class="detail-label">Data e Hora</div><div class="detail-value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div></div>
-                <div class="detail-item"><div class="detail-label">Professor</div><div class="detail-value">${oc.nome_professor}</div></div>
+                <div class="detail-item"><div class="detail-label">Professor</div><div class="detail-value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
                 <div class="detail-item"><div class="detail-label">Aluno</div><div class="detail-value">${oc.nome_aluno}</div></div>
                 <div class="detail-item"><div class="detail-label">Turma</div><div class="detail-value">${oc.turma}</div></div>
                 <div class="detail-item"><div class="detail-label">Tipo</div><div class="detail-value">${badgeTipo(oc.tipo_ocorrencia)}</div></div>
@@ -2006,6 +2025,7 @@
         document.getElementById('formOcorrencia').reset();
         setDataHoraAtual();
         document.getElementById('nomeProfessor').value = currentUser.nome;
+        document.getElementById('nomeProfessorAviso').style.display = 'none';
     }
 
     function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -2062,7 +2082,7 @@
     <h2>Ocorrência Escolar</h2><p class="sub">Colégio ENAU — Sistema de Ocorrências</p>
     <div class="grid">
     <div class="item"><div class="label">Data e Hora</div><div class="value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div></div>
-    <div class="item"><div class="label">Professor</div><div class="value">${oc.nome_professor}</div></div>
+    <div class="item"><div class="label">Professor</div><div class="value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:#888;margin-top:3px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
     <div class="item"><div class="label">Aluno(s)</div><div class="value">${oc.nome_aluno}</div></div>
     <div class="item"><div class="label">Turma</div><div class="value">${oc.turma}</div></div>
     <div class="item full"><div class="label">Ocorrência</div><div class="value">${oc.tipo_ocorrencia}</div></div>
