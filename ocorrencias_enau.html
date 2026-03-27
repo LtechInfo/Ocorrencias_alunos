@@ -6,6 +6,7 @@
     <title>Sistema de Ocorrências - ENAU</title>
     <link rel="icon" type="image/png" href="favicondesktop.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -371,12 +372,29 @@
 
         .hidden { display: none !important; }
 
+        /* ===== SORTABLE HEADERS ===== */
+        .sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+        .sortable:hover { color: white; opacity: 0.85; }
+        .sort-asc::after  { content: ' ↑'; }
+        .sort-desc::after { content: ' ↓'; }
+
+        /* ===== NAV BADGE ===== */
+        .nav-badge { background: var(--p3); color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; margin-left: auto; }
+
+        /* ===== HAMBURGER / MOBILE ===== */
+        .btn-hamburger { background:none; border:none; cursor:pointer; color:var(--text); padding:6px; border-radius:6px; display:flex; align-items:center; }
+        .btn-hamburger:hover { background: var(--bg); }
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:49; }
+        .sidebar-overlay.active { display:block; }
+
         @media (max-width: 900px) {
-            .sidebar { transform: translateX(-100%); }
+            .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; }
+            .sidebar.open { transform: translateX(0); }
             .main-content { margin-left: 0; }
             .stats-row { grid-template-columns: 1fr 1fr; }
             .form-grid { grid-template-columns: 1fr; }
             .col-2 { grid-column: span 1; }
+            .btn-hamburger { display: flex !important; }
         }
         @media (max-width: 600px) {
             .page-body { padding: 16px; }
@@ -443,6 +461,7 @@
 
                 <button class="nav-item hidden" onclick="showSection('coordenacao', this)" id="navCoordenacao">
                     <span class="nav-icon">👁️</span> Visualizar Ocorrências
+                    <span class="nav-badge hidden" id="coordBadge">0</span>
                 </button>
 
                 <div class="nav-label" style="margin-top:20px">Conta</div>
@@ -472,6 +491,9 @@
         <!-- MAIN -->
         <div class="main-content">
             <div class="topbar">
+                <button id="btnMenu" class="btn-hamburger hidden" onclick="toggleSidebar()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
                 <div class="topbar-left">
                     <h2 id="pageTitle">Registrar Ocorrência</h2>
                     <span id="pageSubtitle">Preencha os dados da ocorrência abaixo</span>
@@ -570,15 +592,15 @@
                         <div class="filters-grid">
                             <div class="form-group">
                                 <label>Aluno</label>
-                                <input type="text" id="filtroAluno" placeholder="Buscar aluno...">
+                                <input type="text" id="filtroAluno" placeholder="Buscar aluno..." oninput="aplicarFiltros()">
                             </div>
                             <div class="form-group">
                                 <label>Turma</label>
-                                <input type="text" id="filtroTurma" placeholder="Buscar turma...">
+                                <input type="text" id="filtroTurma" placeholder="Buscar turma..." oninput="aplicarFiltros()">
                             </div>
                             <div class="form-group">
                                 <label>Tipo</label>
-                                <select id="filtroTipo">
+                                <select id="filtroTipo" onchange="aplicarFiltros()">
                                     <option value="">Todos</option>
                                     <option value="disciplinar">Disciplinar</option>
                                     <option value="comportamento">Comportamento</option>
@@ -586,6 +608,14 @@
                                     <option value="frequencia">Frequência</option>
                                     <option value="outros">Outros</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Data Início</label>
+                                <input type="date" id="filtroDataInicio" onchange="aplicarFiltros()">
+                            </div>
+                            <div class="form-group">
+                                <label>Data Fim</label>
+                                <input type="date" id="filtroDataFim" onchange="aplicarFiltros()">
                             </div>
                             <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
                                 <button class="btn btn-primary btn-sm" onclick="aplicarFiltros()">🔍 Filtrar</button>
@@ -608,15 +638,15 @@
                         <div class="filters-grid">
                             <div class="form-group">
                                 <label>Aluno</label>
-                                <input type="text" id="coordFiltroAluno" placeholder="Buscar aluno...">
+                                <input type="text" id="coordFiltroAluno" placeholder="Buscar aluno..." oninput="aplicarFiltrosCoord()">
                             </div>
                             <div class="form-group">
                                 <label>Professor</label>
-                                <input type="text" id="coordFiltroProfessor" placeholder="Buscar professor...">
+                                <input type="text" id="coordFiltroProfessor" placeholder="Buscar professor..." oninput="aplicarFiltrosCoord()">
                             </div>
                             <div class="form-group">
                                 <label>Turma</label>
-                                <select id="coordFiltroTurma">
+                                <select id="coordFiltroTurma" onchange="aplicarFiltrosCoord()">
                                     <option value="">Todas</option>
                                     <optgroup label="Ensino Fundamental">
                                         <option value="1º E.F">1º E.F</option>
@@ -638,12 +668,20 @@
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
-                                <select id="coordFiltroStatus">
+                                <select id="coordFiltroStatus" onchange="aplicarFiltrosCoord()">
                                     <option value="">Todos</option>
                                     <option value="pendente">Pendente</option>
                                     <option value="em-andamento">Em Andamento</option>
                                     <option value="resolvida">Resolvida</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Data Início</label>
+                                <input type="date" id="coordFiltroDataInicio" onchange="aplicarFiltrosCoord()">
+                            </div>
+                            <div class="form-group">
+                                <label>Data Fim</label>
+                                <input type="date" id="coordFiltroDataFim" onchange="aplicarFiltrosCoord()">
                             </div>
                             <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
                                 <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosCoord()">🔍 Filtrar</button>
@@ -699,19 +737,30 @@
                             </div>
                         </div>
 
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px">
+                            <div class="card" style="margin:0;padding:20px">
+                                <div class="card-title" style="margin-bottom:14px;padding-bottom:10px">Ocorrências por Tipo</div>
+                                <canvas id="chartTipo" height="220"></canvas>
+                            </div>
+                            <div class="card" style="margin:0;padding:20px">
+                                <div class="card-title" style="margin-bottom:14px;padding-bottom:10px">Ocorrências por Turma</div>
+                                <canvas id="chartTurma" height="220"></canvas>
+                            </div>
+                        </div>
+
                         <div class="filters-bar">
                             <div class="filters-grid">
                                 <div class="form-group">
                                     <label>Aluno</label>
-                                    <input type="text" id="adminFiltroAluno" placeholder="Buscar aluno...">
+                                    <input type="text" id="adminFiltroAluno" placeholder="Buscar aluno..." oninput="aplicarFiltrosAdmin()">
                                 </div>
                                 <div class="form-group">
                                     <label>Professor</label>
-                                    <input type="text" id="adminFiltroProfessor" placeholder="Buscar professor...">
+                                    <input type="text" id="adminFiltroProfessor" placeholder="Buscar professor..." oninput="aplicarFiltrosAdmin()">
                                 </div>
                                 <div class="form-group">
                                     <label>Tipo</label>
-                                    <select id="adminFiltroTipo">
+                                    <select id="adminFiltroTipo" onchange="aplicarFiltrosAdmin()">
                                         <option value="">Todos</option>
                                         <option value="disciplinar">Disciplinar</option>
                                         <option value="comportamento">Comportamento</option>
@@ -722,12 +771,20 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Status</label>
-                                    <select id="adminFiltroStatus">
+                                    <select id="adminFiltroStatus" onchange="aplicarFiltrosAdmin()">
                                         <option value="">Todos</option>
                                         <option value="pendente">Pendente</option>
                                         <option value="em-andamento">Em Andamento</option>
                                         <option value="resolvida">Resolvida</option>
                                     </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data Início</label>
+                                    <input type="date" id="adminFiltroDataInicio" onchange="aplicarFiltrosAdmin()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Data Fim</label>
+                                    <input type="date" id="adminFiltroDataFim" onchange="aplicarFiltrosAdmin()">
                                 </div>
                                 <div class="form-group" style="display:flex;align-items:flex-end;gap:7px">
                                     <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosAdmin()">🔍 Filtrar</button>
@@ -762,11 +819,11 @@
                             <div class="filters-grid">
                                 <div class="form-group">
                                     <label>Usuário</label>
-                                    <input type="text" id="logFiltroUsuario" placeholder="Filtrar por usuário...">
+                                    <input type="text" id="logFiltroUsuario" placeholder="Filtrar por usuário..." oninput="aplicarFiltrosLog()">
                                 </div>
                                 <div class="form-group">
                                     <label>Ação</label>
-                                    <select id="logFiltroAcao">
+                                    <select id="logFiltroAcao" onchange="aplicarFiltrosLog()">
                                         <option value="">Todas</option>
                                         <option value="login">Login</option>
                                         <option value="logout">Logout</option>
@@ -796,6 +853,7 @@
 
             </div><!-- /page-body -->
         </div><!-- /main-content -->
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
     </div><!-- /app-layout -->
 </div><!-- /mainApp -->
 
@@ -1039,8 +1097,8 @@
         }
     }
 
-    function logout() {
-        registrarLog('logout', `Logout do usuário ${currentUser.nome}`);
+    async function logout() {
+        await registrarLog('logout', `Logout do usuário ${currentUser.nome}`);
         localStorage.removeItem('currentUser');
         currentUser = null;
         document.getElementById('mainApp').classList.add('hidden');
@@ -1205,6 +1263,13 @@
         try {
             const res = await api('ocorrencias?order=data_hora.desc&select=*');
             todasOcorrencias = await res.json();
+            // update badge for coordenacao
+            const badge = document.getElementById('coordBadge');
+            if (badge && currentUser?.role === 'coordenacao') {
+                const pendentes = todasOcorrencias.filter(o => o.status === 'pendente').length;
+                if (pendentes > 0) { badge.textContent = pendentes; badge.classList.remove('hidden'); }
+                else badge.classList.add('hidden');
+            }
         } catch (err) { console.error(err); }
     }
 
@@ -1256,14 +1321,11 @@
     async function carregarTodasOcorrencias() {
         await carregarOcorrencias();
         atualizarStats();
+        renderGraficos();
         renderTabela(todasOcorrencias, 'tabelaTodasOcorrencias', true);
     }
 
-    async function carregarAdmin() {
-        await carregarOcorrencias();
-        atualizarStats();
-        renderTabela(todasOcorrencias, 'tabelaTodasOcorrencias', true);
-    }
+    const carregarAdmin = carregarTodasOcorrencias;
 
     async function carregarCoordOcorrencias() {
         await carregarOcorrencias();
@@ -1271,25 +1333,30 @@
     }
 
     function aplicarFiltrosCoord() {
-        const aluno     = document.getElementById('coordFiltroAluno').value.toLowerCase();
-        const professor = document.getElementById('coordFiltroProfessor').value.toLowerCase();
-        const turma     = document.getElementById('coordFiltroTurma').value;
-        const status    = document.getElementById('coordFiltroStatus').value;
+        const aluno      = document.getElementById('coordFiltroAluno').value.toLowerCase();
+        const professor  = document.getElementById('coordFiltroProfessor').value.toLowerCase();
+        const turma      = document.getElementById('coordFiltroTurma').value;
+        const status     = document.getElementById('coordFiltroStatus').value;
+        const dataInicio = document.getElementById('coordFiltroDataInicio').value;
+        const dataFim    = document.getElementById('coordFiltroDataFim').value;
         renderTabela(todasOcorrencias.filter(oc =>
-            (!aluno     || oc.nome_aluno.toLowerCase().includes(aluno)) &&
-            (!professor || oc.nome_professor.toLowerCase().includes(professor)) &&
-            (!turma     || oc.turma === turma) &&
-            (!status    || oc.status === status)
+            (!aluno      || oc.nome_aluno.toLowerCase().includes(aluno)) &&
+            (!professor  || oc.nome_professor.toLowerCase().includes(professor)) &&
+            (!turma      || oc.turma === turma) &&
+            (!status     || oc.status === status) &&
+            (!dataInicio || new Date(oc.data_hora) >= new Date(dataInicio)) &&
+            (!dataFim    || new Date(oc.data_hora) <= new Date(dataFim + 'T23:59:59'))
         ), 'tabelaCoordOcorrencias', false, true);
     }
 
     function limparFiltrosCoord() {
-        ['coordFiltroAluno','coordFiltroProfessor','coordFiltroTurma','coordFiltroStatus'].forEach(id => document.getElementById(id).value = '');
+        ['coordFiltroAluno','coordFiltroProfessor','coordFiltroTurma','coordFiltroStatus','coordFiltroDataInicio','coordFiltroDataFim'].forEach(id => document.getElementById(id).value = '');
         carregarCoordOcorrencias();
     }
 
     // estado de paginação por container
-    const pagState = {};
+    const pagState  = {};
+    const sortState = {};
 
     function renderTabela(lista, containerId, isAdmin, showProfessor = false, pagina = 1) {
         const container = document.getElementById(containerId);
@@ -1298,24 +1365,25 @@
             return;
         }
 
-        // salva estado para re-render ao mudar página/tamanho
         if (!pagState[containerId]) pagState[containerId] = { perPage: 10 };
-        pagState[containerId].lista        = lista;
-        pagState[containerId].isAdmin      = isAdmin;
-        pagState[containerId].showProfessor= showProfessor;
-        pagState[containerId].page         = pagina;
+        const s = pagState[containerId];
+        s.lista = lista; s.isAdmin = isAdmin; s.showProfessor = showProfessor;
+        s.render = (l, pg) => renderTabela(l, containerId, isAdmin, showProfessor, pg);
 
-        const perPage   = pagState[containerId].perPage;
+        const perPage   = s.perPage;
         const totalPags = Math.ceil(lista.length / perPage);
         const pg        = Math.min(Math.max(pagina, 1), totalPags);
-        pagState[containerId].page = pg;
+        s.page = pg;
         const slice = lista.slice((pg - 1) * perPage, pg * perPage);
 
         const mostrarProf = isAdmin || showProfessor;
+        const ss = sortState[containerId] || {};
+        const sortCls = (field) => ss.field === field ? (ss.dir === 'asc' ? 'sort-asc' : 'sort-desc') : '';
+        const th = (field, label, extra='') => `<th class="sortable ${sortCls(field)}" onclick="sortTabela('${containerId}','${field}')"${extra}>${label}</th>`;
         let html = `<table><thead><tr>
-            <th>Data / Hora</th><th>Aluno</th><th>Turma</th><th>Ocorrência</th>
-            ${mostrarProf ? '<th>Professor</th>' : ''}
-            ${isAdmin ? '<th>Status</th><th style="width:110px">Ações</th>' : '<th style="width:60px">Ver</th>'}
+            ${th('data_hora','Data / Hora')}${th('nome_aluno','Aluno')}${th('turma','Turma')}${th('tipo_ocorrencia','Ocorrência')}
+            ${mostrarProf ? th('nome_professor','Professor') : ''}
+            ${isAdmin ? th('status','Status') + '<th style="width:110px">Ações</th>' : '<th style="width:60px">Ver</th>'}
         </tr></thead><tbody>`;
 
         slice.forEach(oc => {
@@ -1377,19 +1445,31 @@
 
     function irPagina(containerId, pg) {
         const s = pagState[containerId];
-        if (!s) return;
-        if (s.tipo === 'usuarios') { renderUsuarios(s.lista, pg); return; }
-        if (s.tipo === 'logs')     { renderLogs(s.lista, pg);     return; }
-        renderTabela(s.lista, containerId, s.isAdmin, s.showProfessor, pg);
+        if (s?.render) s.render(s.lista, pg);
     }
 
     function mudarPerPage(containerId, val) {
         const s = pagState[containerId];
         if (!s) return;
         s.perPage = parseInt(val);
-        if (s.tipo === 'usuarios') { renderUsuarios(s.lista, 1); return; }
-        if (s.tipo === 'logs')     { renderLogs(s.lista, 1);     return; }
-        renderTabela(s.lista, containerId, s.isAdmin, s.showProfessor, 1);
+        if (s.render) s.render(s.lista, 1);
+    }
+
+    function sortTabela(containerId, field) {
+        const s = pagState[containerId];
+        if (!s) return;
+        const ss = sortState[containerId] || {};
+        const newDir = (ss.field === field && ss.dir === 'asc') ? 'desc' : 'asc';
+        sortState[containerId] = { field, dir: newDir };
+        const sorted = [...s.lista].sort((a, b) => {
+            let va = a[field] || '', vb = b[field] || '';
+            if (field === 'data_hora') { va = new Date(va); vb = new Date(vb); }
+            else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+            if (va < vb) return newDir === 'asc' ? -1 : 1;
+            if (va > vb) return newDir === 'asc' ? 1 : -1;
+            return 0;
+        });
+        if (s.render) s.render(sorted, 1);
     }
 
     function visualizarOcorrencia(id) {
@@ -1405,6 +1485,9 @@
                 <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${badgeStatus(oc.status)}</div></div>
                 <div class="detail-item full"><div class="detail-label">Descrição</div><div class="detail-value" style="white-space:pre-wrap">${oc.descricao}</div></div>
                 ${oc.acao_tomada ? `<div class="detail-item full"><div class="detail-label">Ação Tomada</div><div class="detail-value" style="white-space:pre-wrap">${oc.acao_tomada}</div></div>` : ''}
+            </div>
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
+                <button class="btn btn-ghost btn-sm" onclick="imprimirOcorrencia('${oc.id}')">🖨️ Imprimir</button>
             </div>`;
         document.getElementById('modalVisualizar').classList.add('active');
     }
@@ -1504,12 +1587,13 @@
             return;
         }
         if (!pagState[containerId]) pagState[containerId] = { perPage: 10 };
-        pagState[containerId].lista = lista;
-        pagState[containerId].tipo  = 'usuarios';
-        const perPage   = pagState[containerId].perPage;
+        const s = pagState[containerId];
+        s.lista = lista;
+        s.render = (l, pg) => renderUsuarios(l, pg);
+        const perPage   = s.perPage;
         const totalPags = Math.ceil(lista.length / perPage);
         const pg        = Math.min(Math.max(pagina, 1), totalPags);
-        pagState[containerId].page = pg;
+        s.page = pg;
         const slice = lista.slice((pg - 1) * perPage, pg * perPage);
 
         let html = `<table><thead><tr>
@@ -1522,7 +1606,7 @@
             html += `<tr>
                 <td><strong>${u.nome}</strong></td>
                 <td style="color:var(--text-muted);font-family:monospace">${u.username || '—'}</td>
-                <td>${u.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : u.role === 'coordenacao' ? '<span class="badge badge-frequencia">Coordenação</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
+                <td>${badgeRole(u.role)}</td>
                 <td class="log-time">${dt}</td>
                 <td>
                     <div style="display:flex;gap:5px">
@@ -1645,7 +1729,7 @@
     // ==================== LOGS ====================
     async function carregarLogs() {
         try {
-            const res = await api('logs?order=criado_em.desc&limit=200&select=*');
+            const res = await api('logs?order=criado_em.desc&limit=500&select=*');
             todosLogs = await res.json();
             renderLogs(todosLogs);
         } catch (err) { console.error(err); }
@@ -1659,12 +1743,13 @@
             return;
         }
         if (!pagState[containerId]) pagState[containerId] = { perPage: 10 };
-        pagState[containerId].lista = lista;
-        pagState[containerId].tipo  = 'logs';
-        const perPage   = pagState[containerId].perPage;
+        const s = pagState[containerId];
+        s.lista = lista;
+        s.render = (l, pg) => renderLogs(l, pg);
+        const perPage   = s.perPage;
         const totalPags = Math.ceil(lista.length / perPage);
         const pg        = Math.min(Math.max(pagina, 1), totalPags);
-        pagState[containerId].page = pg;
+        s.page = pg;
         const slice = lista.slice((pg - 1) * perPage, pg * perPage);
 
         const icones = { login:'🔑', logout:'🚪', registro:'📝', status:'🔄', usuario_criado:'👤', usuario_excluido:'🗑️', troca_senha:'🔐', exclusao_ocorrencia:'🗑️' };
@@ -1679,7 +1764,7 @@
             html += `<tr class="log-row">
                 <td class="log-time">${dt}</td>
                 <td><strong>${l.usuario_nome}</strong></td>
-                <td>${l.usuario_role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : l.usuario_role === 'coordenacao' ? '<span class="badge badge-frequencia">Coordenação</span>' : '<span class="badge badge-professor">Professor</span>'}</td>
+                <td>${badgeRole(l.usuario_role)}</td>
                 <td>${ico} ${formatarAcao(l.acao)}</td>
                 <td style="color:var(--text-muted);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${l.detalhes || ''}">${l.detalhes || '—'}</td>
             </tr>`;
@@ -1723,37 +1808,45 @@
 
     // ==================== FILTROS ====================
     function aplicarFiltros() {
-        const aluno = document.getElementById('filtroAluno').value.toLowerCase();
-        const turma = document.getElementById('filtroTurma').value.toLowerCase();
-        const tipo  = document.getElementById('filtroTipo').value;
+        const aluno      = document.getElementById('filtroAluno').value.toLowerCase();
+        const turma      = document.getElementById('filtroTurma').value.toLowerCase();
+        const tipo       = document.getElementById('filtroTipo').value;
+        const dataInicio = document.getElementById('filtroDataInicio').value;
+        const dataFim    = document.getElementById('filtroDataFim').value;
         const minhas = todasOcorrencias.filter(o => o.nome_professor === currentUser.nome);
         renderTabela(minhas.filter(oc =>
-            (!aluno || oc.nome_aluno.toLowerCase().includes(aluno)) &&
-            (!turma || oc.turma.toLowerCase().includes(turma)) &&
-            (!tipo  || oc.tipo_ocorrencia === tipo)
+            (!aluno      || oc.nome_aluno.toLowerCase().includes(aluno)) &&
+            (!turma      || oc.turma.toLowerCase().includes(turma)) &&
+            (!tipo       || oc.tipo_ocorrencia === tipo) &&
+            (!dataInicio || new Date(oc.data_hora) >= new Date(dataInicio)) &&
+            (!dataFim    || new Date(oc.data_hora) <= new Date(dataFim + 'T23:59:59'))
         ), 'tabelaMinhasOcorrencias', false);
     }
 
     function limparFiltros() {
-        ['filtroAluno','filtroTurma','filtroTipo'].forEach(id => document.getElementById(id).value = '');
+        ['filtroAluno','filtroTurma','filtroTipo','filtroDataInicio','filtroDataFim'].forEach(id => document.getElementById(id).value = '');
         carregarMinhasOcorrencias();
     }
 
     function aplicarFiltrosAdmin() {
-        const aluno     = document.getElementById('adminFiltroAluno').value.toLowerCase();
-        const professor = document.getElementById('adminFiltroProfessor').value.toLowerCase();
-        const tipo      = document.getElementById('adminFiltroTipo').value;
-        const status    = document.getElementById('adminFiltroStatus').value;
+        const aluno      = document.getElementById('adminFiltroAluno').value.toLowerCase();
+        const professor  = document.getElementById('adminFiltroProfessor').value.toLowerCase();
+        const tipo       = document.getElementById('adminFiltroTipo').value;
+        const status     = document.getElementById('adminFiltroStatus').value;
+        const dataInicio = document.getElementById('adminFiltroDataInicio').value;
+        const dataFim    = document.getElementById('adminFiltroDataFim').value;
         renderTabela(todasOcorrencias.filter(oc =>
-            (!aluno     || oc.nome_aluno.toLowerCase().includes(aluno)) &&
-            (!professor || oc.nome_professor.toLowerCase().includes(professor)) &&
-            (!tipo      || oc.tipo_ocorrencia === tipo) &&
-            (!status    || oc.status === status)
+            (!aluno      || oc.nome_aluno.toLowerCase().includes(aluno)) &&
+            (!professor  || oc.nome_professor.toLowerCase().includes(professor)) &&
+            (!tipo       || oc.tipo_ocorrencia === tipo) &&
+            (!status     || oc.status === status) &&
+            (!dataInicio || new Date(oc.data_hora) >= new Date(dataInicio)) &&
+            (!dataFim    || new Date(oc.data_hora) <= new Date(dataFim + 'T23:59:59'))
         ), 'tabelaTodasOcorrencias', true);
     }
 
     function limparFiltrosAdmin() {
-        ['adminFiltroAluno','adminFiltroProfessor','adminFiltroTipo','adminFiltroStatus'].forEach(id => document.getElementById(id).value = '');
+        ['adminFiltroAluno','adminFiltroProfessor','adminFiltroTipo','adminFiltroStatus','adminFiltroDataInicio','adminFiltroDataFim'].forEach(id => document.getElementById(id).value = '');
         carregarTodasOcorrencias();
     }
 
@@ -1804,26 +1897,16 @@
         setTimeout(() => { c.innerHTML = ''; }, 4000);
     }
 
-    function badgeTipo(t) {
-        const map = { disciplinar:'Disciplinar', comportamento:'Comportamento', material:'Material Escolar', frequencia:'Frequência', outros:'Outros' };
-        return `<span class="badge badge-${t}">${map[t] || t}</span>`;
-    }
+    const TIPO_MAP   = { disciplinar:'Disciplinar', comportamento:'Comportamento', material:'Material Escolar', frequencia:'Frequência', outros:'Outros' };
+    const STATUS_MAP = { 'pendente':'Pendente', 'em-andamento':'Em Andamento', 'resolvida':'Resolvida' };
+    const ROLE_MAP   = { admin:'Admin', coordenacao:'Coordenação', professor:'Professor' };
+    const ROLE_BADGE = { admin:'badge-admin', coordenacao:'badge-frequencia', professor:'badge-professor' };
 
-    function badgeStatus(s) {
-        const map = { 'pendente':'Pendente', 'em-andamento':'Em Andamento', 'resolvida':'Resolvida' };
-        const cls = s === 'em-andamento' ? 'andamento' : s;
-        return `<span class="badge badge-${cls}">${map[s] || s}</span>`;
-    }
-
-    function formatarTipo(t) {
-        const map = { disciplinar:'Disciplinar', comportamento:'Comportamento', material:'Material Escolar', frequencia:'Frequência', outros:'Outros' };
-        return map[t] || t;
-    }
-
-    function formatarStatus(s) {
-        const map = { 'pendente':'Pendente', 'em-andamento':'Em Andamento', 'resolvida':'Resolvida' };
-        return map[s] || s;
-    }
+    function badgeTipo(t)    { return `<span class="badge badge-${t}">${TIPO_MAP[t] || t}</span>`; }
+    function badgeStatus(s)  { const cls = s === 'em-andamento' ? 'andamento' : s; return `<span class="badge badge-${cls}">${STATUS_MAP[s] || s}</span>`; }
+    function badgeRole(r)    { return `<span class="badge ${ROLE_BADGE[r] || 'badge-professor'}">${ROLE_MAP[r] || r}</span>`; }
+    function formatarTipo(t) { return TIPO_MAP[t]   || t; }
+    function formatarStatus(s){ return STATUS_MAP[s] || s; }
 
     function formatarAcao(a) {
         const map = { login:'Login', logout:'Logout', registro:'Registro de Ocorrência', status:'Atualização de Status', usuario_criado:'Usuário Criado/Editado', usuario_excluido:'Usuário Excluído', troca_senha:'Troca de Senha', exclusao_ocorrencia:'Exclusão de Ocorrência' };
@@ -1833,6 +1916,84 @@
     window.onclick = e => {
         if (e.target.classList.contains('modal')) e.target.classList.remove('active');
     };
+
+    // ==================== IMPRIMIR OCORRÊNCIA ====================
+    function imprimirOcorrencia(id) {
+        const oc = todasOcorrencias.find(o => o.id === id);
+        if (!oc) return;
+        const win = window.open('', '_blank');
+        win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ocorrência</title>
+    <style>body{font-family:Arial,sans-serif;padding:32px;max-width:700px;margin:0 auto}
+    h2{color:#4A1456;margin-bottom:4px}p.sub{color:#666;margin-bottom:24px;font-size:13px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .item{margin-bottom:8px}.label{font-size:11px;font-weight:600;text-transform:uppercase;color:#888;margin-bottom:3px}
+    .value{font-size:14px;padding:8px;background:#f8f8f8;border-radius:4px;border:1px solid #e0e0e0}
+    .full{grid-column:span 2}
+    .footer{margin-top:32px;font-size:11px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:12px}
+    @media print{button{display:none}}</style></head><body>
+    <h2>Ocorrência Escolar</h2><p class="sub">Colégio ENAU — Sistema de Ocorrências</p>
+    <div class="grid">
+    <div class="item"><div class="label">Data e Hora</div><div class="value">${new Date(oc.data_hora).toLocaleString('pt-BR')}</div></div>
+    <div class="item"><div class="label">Professor</div><div class="value">${oc.nome_professor}</div></div>
+    <div class="item"><div class="label">Aluno(s)</div><div class="value">${oc.nome_aluno}</div></div>
+    <div class="item"><div class="label">Turma</div><div class="value">${oc.turma}</div></div>
+    <div class="item full"><div class="label">Ocorrência</div><div class="value">${oc.tipo_ocorrencia}</div></div>
+    <div class="item full"><div class="label">Descrição</div><div class="value" style="white-space:pre-wrap">${oc.descricao}</div></div>
+    <div class="item"><div class="label">Status</div><div class="value">${oc.status}</div></div>
+    </div>
+    <div class="footer">Impresso em ${new Date().toLocaleString('pt-BR')} — ENAU Sistema de Ocorrências</div>
+    <br><button onclick="window.print()">Imprimir</button>
+    </body></html>`);
+        win.document.close();
+    }
+
+    // ==================== GRÁFICOS ====================
+    function renderGraficos() {
+        ['chartTipo','chartTurma'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const existing = Chart.getChart(el);
+            if (existing) existing.destroy();
+        });
+
+        const tipoCount = {};
+        todasOcorrencias.forEach(oc => {
+            const label = oc.tipo_ocorrencia.includes(' - ') ? oc.tipo_ocorrencia.split(' - ').slice(1).join(' - ') : oc.tipo_ocorrencia;
+            const short = label.length > 30 ? label.substring(0,28)+'…' : label;
+            tipoCount[short] = (tipoCount[short] || 0) + 1;
+        });
+        const tipoSorted = Object.entries(tipoCount).sort((a,b) => b[1]-a[1]).slice(0,8);
+
+        const turmaCount = {};
+        todasOcorrencias.forEach(oc => { turmaCount[oc.turma] = (turmaCount[oc.turma]||0)+1; });
+        const turmaSorted = Object.entries(turmaCount).sort((a,b) => b[1]-a[1]);
+
+        const colors = ['#4A1456','#7B2D6E','#C0394B','#E05A5A','#8B3A7E','#D4526A','#6B2260','#B84455'];
+
+        const elTipo = document.getElementById('chartTipo');
+        const elTurma = document.getElementById('chartTurma');
+        if (!elTipo || !elTurma) return;
+
+        new Chart(elTipo, {
+            type: 'bar',
+            data: { labels: tipoSorted.map(e=>e[0]), datasets:[{ data: tipoSorted.map(e=>e[1]), backgroundColor: colors, borderRadius: 4 }]},
+            options: { plugins:{legend:{display:false}}, scales:{ x:{ticks:{font:{size:10}}}, y:{beginAtZero:true,ticks:{stepSize:1}} }, responsive:true }
+        });
+
+        new Chart(elTurma, {
+            type: 'doughnut',
+            data: { labels: turmaSorted.map(e=>e[0]), datasets:[{ data: turmaSorted.map(e=>e[1]), backgroundColor: colors, borderWidth: 2 }]},
+            options: { plugins:{legend:{position:'right',labels:{font:{size:11}}}}, responsive:true }
+        });
+    }
+
+    // ==================== SIDEBAR TOGGLE ====================
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
 </script>
 </body>
 </html>
