@@ -91,6 +91,48 @@
             100% { width: 100%; }
         }
 
+        /* ===== ALUNO AUTOCOMPLETE ===== */
+        .aluno-input-wrap {
+            min-height: 42px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
+            padding: 5px 10px; border: 1.5px solid var(--border); border-radius: 8px;
+            background: var(--white); cursor: text; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .aluno-input-wrap:focus-within {
+            border-color: var(--p2); box-shadow: 0 0 0 3px rgba(123,45,110,0.12);
+        }
+        .aluno-input-wrap input {
+            border: none; outline: none; box-shadow: none; padding: 2px 4px;
+            font-size: 14px; min-width: 140px; flex: 1; background: transparent;
+        }
+        .aluno-chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: var(--p1-light); color: var(--p1); border: 1px solid rgba(74,20,86,0.2);
+            border-radius: 20px; padding: 3px 10px; font-size: 12.5px; font-weight: 500;
+            white-space: nowrap;
+        }
+        .aluno-chip button {
+            background: none; border: none; cursor: pointer; color: var(--p2);
+            font-size: 14px; line-height: 1; padding: 0; display: flex; align-items: center;
+        }
+        .aluno-chip button:hover { color: var(--p3); }
+        .aluno-dropdown {
+            position: absolute; left: 0; right: 0; top: 100%; z-index: 100;
+            background: var(--white); border: 1.5px solid var(--border); border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-height: 220px; overflow-y: auto;
+            display: none; margin-top: 2px;
+        }
+        .aluno-dropdown.open { display: block; }
+        .aluno-opt {
+            padding: 9px 14px; font-size: 13.5px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .aluno-opt:last-child { border-bottom: none; }
+        .aluno-opt:hover, .aluno-opt.focused { background: var(--p1-light); color: var(--p1); }
+        .aluno-opt .opt-turma { font-size: 11px; color: var(--text-muted); background: var(--bg); padding: 2px 7px; border-radius: 10px; }
+        .aluno-opt:hover .opt-turma, .aluno-opt.focused .opt-turma { background: rgba(74,20,86,0.1); color: var(--p1); }
+        .aluno-opt-empty { padding: 12px 14px; font-size: 13px; color: var(--text-muted); text-align: center; }
+
         /* ===== LOGIN ===== */
         .login-screen {
             min-height: 100vh;
@@ -614,13 +656,18 @@
                                     <label>Data e Hora <span class="required">*</span></label>
                                     <input type="datetime-local" id="dataHora" required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="position:relative">
                                     <label>Aluno(s) <span class="required">*</span></label>
-                                    <input type="text" id="nomeAluno" required placeholder="Nome do aluno (separe por vírgula para múltiplos)">
+                                    <div class="aluno-input-wrap" id="alunoInputWrap" onclick="document.getElementById('alunoSearch').focus()">
+                                        <div id="alunoChips"></div>
+                                        <input type="text" id="alunoSearch" placeholder="Digite o nome..." autocomplete="off" oninput="filtrarAlunos()" onkeydown="alunoKeydown(event)" onfocus="filtrarAlunos()">
+                                    </div>
+                                    <div class="aluno-dropdown" id="alunoDropdown"></div>
+                                    <input type="hidden" id="nomeAluno">
                                 </div>
                                 <div class="form-group">
                                     <label>Turma <span class="required">*</span></label>
-                                    <select id="turma" required>
+                                    <select id="turma" required onchange="onTurmaChange()">
                                         <option value="">Escolher</option>
                                         <optgroup label="Ensino Fundamental">
                                             <option value="1º E.F">1º E.F</option>
@@ -638,7 +685,16 @@
                                             <option value="2º E.M">2º E.M</option>
                                             <option value="3º E.M">3º E.M</option>
                                         </optgroup>
+                                        <optgroup label="Outros">
+                                            <option value="Ed. Infantil 1">Ed. Infantil 1</option>
+                                            <option value="Ed. Infantil 2">Ed. Infantil 2</option>
+                                            <option value="Maternal 1">Maternal 1</option>
+                                            <option value="Maternal 2">Maternal 2</option>
+                                            <option value="Complementar">Complementar</option>
+                                            <option value="Comp. Avulso">Comp. Avulso</option>
+                                        </optgroup>
                                     </select>
+                                    <span id="turmaLockMsg" style="display:none;font-size:11px;color:var(--text-muted);margin-top:3px">🔒 Definida pelo aluno selecionado</span>
                                 </div>
                                 <div class="form-group col-2">
                                     <label>Ocorrência <span class="required">*</span></label>
@@ -1420,6 +1476,9 @@
 
     async function handleSubmitOcorrencia(e) {
         e.preventDefault();
+        if (!document.getElementById('nomeAluno').value.trim()) {
+            mostrarAlerta('Selecione ao menos um aluno.', 'error'); return;
+        }
         const btn = document.getElementById('btnRegistrar');
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner"></span> Salvando...';
@@ -2134,6 +2193,514 @@
             options: { plugins:{legend:{position:'right',labels:{font:{size:11}}}}, responsive:true }
         });
     }
+
+    // ==================== ALUNOS CADASTRADOS ====================
+    const ALUNOS_CADASTRADOS = [
+  {nome:"ÁGATA DE SOUZA REIS SANTOS",turma:"Ed. Infantil 1"},
+  {nome:"ALICE BORJA GRACINDO",turma:"7º E.F"},
+  {nome:"ALICE CASTRO VASCONCELOS",turma:"3º E.M"},
+  {nome:"ALICE COURBELLY NAZÁRIO",turma:"6º E.F"},
+  {nome:"ALICE COSTA PACCES",turma:"9º E.F"},
+  {nome:"ALICE DA SILVEIRA SANTOS",turma:"3º E.F"},
+  {nome:"ALICE DE ANDRADE",turma:"9º E.F"},
+  {nome:"ALICE DE OLIVEIRA MARINHO",turma:"8º E.F"},
+  {nome:"ALICE FERNANDES PEREIRA",turma:"4º E.F"},
+  {nome:"ALICE HARUMI UMEDA PEREIRA",turma:"9º E.F"},
+  {nome:"ALICE MARQUES RUIZ CARDOSO SANTOS",turma:"3º E.F"},
+  {nome:"ALICE RISHTER LOURENÇO ABOU-RIZK",turma:"6º E.F"},
+  {nome:"ALICE VITÓRIA DA SILVA DIAS",turma:"3º E.F"},
+  {nome:"ALÍCIA GLIOSI ANDREOLI MIYAKE",turma:"6º E.F"},
+  {nome:"ALLANA FONTES PEREIRA",turma:"2º E.F"},
+  {nome:"ÁLVARO GABRIEL ANDRIOTTI GALVÃO",turma:"4º E.F"},
+  {nome:"ANA BEATRIZ ALVES TSURUDA",turma:"3º E.M"},
+  {nome:"ANA BEATRIZ FERNANDES CARDOSO",turma:"2º E.M"},
+  {nome:"ANA CAROLINA SANTOS PELINSON",turma:"9º E.F"},
+  {nome:"ANA CLARA DENTI DE CARVALHO",turma:"7º E.F"},
+  {nome:"ANA CLARA OLIVEIRA SOUZA",turma:"Maternal 2"},
+  {nome:"ANA CLARA PELINSON LUIS",turma:"3º E.F"},
+  {nome:"ANA CLARA RIBEIRO COSTA",turma:"Ed. Infantil 2"},
+  {nome:"ANA LÍVIA BONAVENTURA OLIVEIRA MARTINS",turma:"Maternal 1"},
+  {nome:"ANA LUISA RAMOS CASANOVA",turma:"6º E.F"},
+  {nome:"ANA SOPHIA XAVIER DE OLIVEIRA",turma:"7º E.F"},
+  {nome:"ANA TEIXEIRA NASCIMENTO",turma:"Maternal 1"},
+  {nome:"ANAEL PANEGUINI RAMOS",turma:"Ed. Infantil 2"},
+  {nome:"ANTÔNIO GABRIEL ANDRIOTTI GALVÃO",turma:"7º E.F"},
+  {nome:"ANTÔNIO LEÔNIDAS DE PAULA PEREIRA",turma:"2º E.F"},
+  {nome:"ANTONIO CARLOS SILVA NETO",turma:"1º E.F"},
+  {nome:"ÁRTEMIS BLEFARI CAMPOS",turma:"Ed. Infantil 2"},
+  {nome:"ARTHUR ASSIS DUENHAS",turma:"2º E.M"},
+  {nome:"ARTHUR AUGUSTO FERREIRA GUIMARÃES",turma:"2º E.F"},
+  {nome:"ARTHUR COSTA PACCES",turma:"2º E.M"},
+  {nome:"ARTHUR GONÇALVES DE PAULA",turma:"1º E.M"},
+  {nome:"ARTHUR LEMOS DONEGÁ SCOPEL JACOBINE",turma:"9º E.F"},
+  {nome:"ARTHUR LIMA SILVA",turma:"Maternal 2"},
+  {nome:"ARTHUR MARTONIE MARIANO",turma:"8º E.F"},
+  {nome:"ARTHUR NASCIMENTO DA SILVA ESTEVES",turma:"5º E.F"},
+  {nome:"ARTHUR NUNES BRAGUIM",turma:"Ed. Infantil 2"},
+  {nome:"ARTHUR NUNES DE ARAUJO",turma:"9º E.F"},
+  {nome:"ARTHUR RODRIGUES MAEDA CASTILHO",turma:"9º E.F"},
+  {nome:"ARTHUR SILVA BATISTA",turma:"2º E.M"},
+  {nome:"ARTHUR SILVA SCHMIDT",turma:"8º E.F"},
+  {nome:"ARTHUR TRANOULIS SILVA",turma:"7º E.F"},
+  {nome:"AUGUSTO BERNARDO RIBEIRO DOS SANTOS",turma:"2º E.F"},
+  {nome:"AUGUSTO FREIRE RODRIGUES",turma:"3º E.F"},
+  {nome:"BÁRBARA DE SOUZA GONÇALVES",turma:"2º E.M"},
+  {nome:"BÁRBARA FERNANDA GUIMARÃES BORTOLETTO",turma:"9º E.F"},
+  {nome:"BEATRIZ DINIZ SILVA",turma:"2º E.M"},
+  {nome:"BEATRIZ PONTES MEDEIROS",turma:"2º E.M"},
+  {nome:"BEATRIZ ROSSETTO PEREIRA",turma:"3º E.M"},
+  {nome:"BELLA HISSAY NAGAYASSU FERRAZ",turma:"2º E.F"},
+  {nome:"BERNARDO FURTADO DA SILVA",turma:"2º E.F"},
+  {nome:"BERNARDO LAGOS VIELMA LIPORONI",turma:"4º E.F"},
+  {nome:"BERNARDO TAKESHI UMEDA PEREIRA",turma:"3º E.F"},
+  {nome:"BIANCA NARDELLI",turma:"8º E.F"},
+  {nome:"BRENDA REIS DOMENICO",turma:"8º E.F"},
+  {nome:"BRENO ALEX ALVES SILVA",turma:"7º E.F"},
+  {nome:"BRENNO LUMINATTI RIBEIRO DE FIGUEIREDO",turma:"9º E.F"},
+  {nome:"BRUNA NARDELLI",turma:"8º E.F"},
+  {nome:"BRUNA TOMAGESKI ABOU RIZK",turma:"4º E.F"},
+  {nome:"BRUNO CANDI DE OLIVEIRA",turma:"1º E.M"},
+  {nome:"BRUNO DE JULI COPOLA SAMPAIO",turma:"2º E.F"},
+  {nome:"CAÁPUÃ OFAIÉ LUZ",turma:"1º E.F"},
+  {nome:"CAIO VEIGA DOS REIS GRACIANO",turma:"3º E.F"},
+  {nome:"CAROLINA LETIERI ALMEIDA",turma:"8º E.F"},
+  {nome:"CAROLINA PERILHÃO CRISTOFARO",turma:"1º E.M"},
+  {nome:"CAUÃ LINCOLN KANEGAE PEREIRA",turma:"8º E.F"},
+  {nome:"CECILIA BAETA ALVAREZ",turma:"3º E.M"},
+  {nome:"CINTHIA CALCANI DA COSTA",turma:"9º E.F"},
+  {nome:"CLARA RONCON GRECCO DEL DONO",turma:"9º E.F"},
+  {nome:"DANIEL LUIS SALES SENA",turma:"1º E.F"},
+  {nome:"DAVI DA SILVEIRA SANTOS",turma:"1º E.F"},
+  {nome:"DAVI DE FREITAS SANTOS",turma:"7º E.F"},
+  {nome:"DAVI DE JULI COPOLA SAMPAIO",turma:"2º E.F"},
+  {nome:"DAVI DOS SANTOS ALVES",turma:"7º E.F"},
+  {nome:"DAVI JOSÉ MEDEIROS DA SILVA",turma:"1º E.F"},
+  {nome:"DAVI RAMALHO CERQUEIRA",turma:"9º E.F"},
+  {nome:"DIMITRI NARDELLI DE OLIVEIRA",turma:"8º E.F"},
+  {nome:"DYLAN OLIVEIRA BRETAS",turma:"3º E.F"},
+  {nome:"ELISA BERTONZIN",turma:"4º E.F"},
+  {nome:"ELISA DILECTA DA SILVA MENDES",turma:"1º E.F"},
+  {nome:"ELISA MELO VIEIRA",turma:"4º E.F"},
+  {nome:"ELOAH DE FREITAS CABRAL",turma:"3º E.M"},
+  {nome:"EMILY SOARES GOMES",turma:"6º E.F"},
+  {nome:"ELLEN SILVA SOUZA",turma:"9º E.F"},
+  {nome:"ENRICO CACHEFO SATIL",turma:"3º E.F"},
+  {nome:"ENRICO PRADO DA SILVA",turma:"3º E.M"},
+  {nome:"ENZO ARAUJO AMORIM",turma:"3º E.F"},
+  {nome:"ENZO LEONARDO SANTOS DE CARVALHO",turma:"8º E.F"},
+  {nome:"ENZO LUIGI DA PAZ RIPOLI",turma:"2º E.M"},
+  {nome:"ESTHER ESTEVES DIAS",turma:"3º E.F"},
+  {nome:"ESTELA MONTEIRO DE ASSUNÇÃO LIMA",turma:"7º E.F"},
+  {nome:"FELIPE CALCANI COSTA",turma:"4º E.F"},
+  {nome:"FELIPE DE MELO GONZALES",turma:"Ed. Infantil 2"},
+  {nome:"FELIPE FONTANA COPOLA SAMPAIO",turma:"5º E.F"},
+  {nome:"FELIPE PEREIRA GONÇALVES",turma:"8º E.F"},
+  {nome:"FELIPE YUKIO CABBÁU TAKAHASHI",turma:"6º E.F"},
+  {nome:"FERNANDA RAFAELLA DA CUNHA LEITE",turma:"6º E.F"},
+  {nome:"FERNANDO FONTES PEREIRA",turma:"8º E.F"},
+  {nome:"FILIPE LIMA LUNARDI PERICO",turma:"1º E.F"},
+  {nome:"FIORELLA HIKARI BARBOSA OKUMA DASAN",turma:"Ed. Infantil 2"},
+  {nome:"FLÁVIA CAMPBEL",turma:"1º E.M"},
+  {nome:"FREDERICO SPINOLA ALMEIDA",turma:"Maternal 1"},
+  {nome:"GABRIEL AMORIM NUNES",turma:"1º E.F"},
+  {nome:"GABRIEL FOSCHIANI FERREIRA",turma:"1º E.M"},
+  {nome:"GABRIEL MENDES DE OLIVEIRA",turma:"8º E.F"},
+  {nome:"GABRIEL NASCIMENTO DOS SANTOS",turma:"5º E.F"},
+  {nome:"GABRIEL SANT'ANNA MOREIRA",turma:"6º E.F"},
+  {nome:"GABRIELLE FERREIRA DUARTE",turma:"3º E.M"},
+  {nome:"GABRIELLY OLIBONE COELHO",turma:"3º E.M"},
+  {nome:"GABRIELLY RIBEIRO FRITZ POPPE",turma:"2º E.F"},
+  {nome:"GIOVANNA SAORI DE ANDRADE SAKAMOTO",turma:"7º E.F"},
+  {nome:"GIOVANNA SAYURI MARTINS",turma:"1º E.M"},
+  {nome:"GIOVANNA ZANATA SASSO",turma:"7º E.F"},
+  {nome:"GISELLE ROSIE JUSEVICIUS MENATO",turma:"2º E.M"},
+  {nome:"GUILHERME CARDOSO DOS REIS BEZERRA",turma:"7º E.F"},
+  {nome:"GUILHERME CESARIO SANTANA",turma:"1º E.F"},
+  {nome:"GUILHERME MOTA BUSCARIOLI",turma:"2º E.M"},
+  {nome:"GUILHERME RIBEIRO VOIDA",turma:"3º E.M"},
+  {nome:"GUILHERME SOUZA SILVA",turma:"9º E.F"},
+  {nome:"GUILHERME STEFANINI ARAUJO",turma:"3º E.M"},
+  {nome:"GUSTAVO DE MELO GONZALES",turma:"4º E.F"},
+  {nome:"GUSTAVO OLIBONE COELHO",turma:"8º E.F"},
+  {nome:"GUSTAVO VELOSO NEVES",turma:"9º E.F"},
+  {nome:"HECTOR FERDINAND ADOLFO HERBST",turma:"6º E.F"},
+  {nome:"HEITOR AZOR DOLCIMÁSCULO",turma:"5º E.F"},
+  {nome:"HELENA LIRA GIANASI PEREIRA",turma:"Maternal 1"},
+  {nome:"HELENA MIKI DE ANDRADE SAKAMOTO",turma:"3º E.F"},
+  {nome:"HELOÍSA BERTONZIN DOS SANTOS",turma:"5º E.F"},
+  {nome:"HELOISA MELO DO NASCIMENTO",turma:"7º E.F"},
+  {nome:"HENRY ABREU STEFFENS",turma:"4º E.F"},
+  {nome:"HENRY PANEGUINI RAMOS",turma:"1º E.F"},
+  {nome:"IGOR DA SILVA",turma:"3º E.M"},
+  {nome:"IGOR TANAKA SANCHES",turma:"9º E.F"},
+  {nome:"ISAAC AUGUSTO GUIMARÃES",turma:"8º E.F"},
+  {nome:"ISAAC DA SILVA PIMENTA",turma:"Ed. Infantil 2"},
+  {nome:"ISABELA BORDINO BELÃN",turma:"6º E.F"},
+  {nome:"ISABELA DOS SANTOS FERNANDES LUCAS",turma:"3º E.M"},
+  {nome:"ISABELI MARINS BETEGA",turma:"1º E.M"},
+  {nome:"ISABELY MEIRELES DA SILVA",turma:"2º E.M"},
+  {nome:"ISADORA LUPPI",turma:"9º E.F"},
+  {nome:"ISADORA RIBEIRO MOTA",turma:"8º E.F"},
+  {nome:"ISADORA SANTOS PELINSON",turma:"Ed. Infantil 2"},
+  {nome:"ISIS GALVÃO DELGADO",turma:"2º E.F"},
+  {nome:"ISIS GODEC",turma:"1º E.M"},
+  {nome:"ISABELLA CARDOSO BONTEMPO",turma:"3º E.M"},
+  {nome:"ISABELLA NUNES SANTOS",turma:"2º E.M"},
+  {nome:"ISABELLA SILVESTRE FARIA",turma:"1º E.M"},
+  {nome:"ISABELLY DE FALCO SILVA",turma:"2º E.M"},
+  {nome:"ISABELLY SILVA SOUZA",turma:"2º E.M"},
+  {nome:"IZABELE SOARES DA SILVA",turma:"2º E.M"},
+  {nome:"JOÃO CARLOS SANTINELLI RIBEIRO",turma:"8º E.F"},
+  {nome:"JOÃO MIGUEL NASCIMENTO NORONHA DE SOUSA",turma:"6º E.F"},
+  {nome:"JOÃO NUNES SANTOS",turma:"Complementar"},
+  {nome:"JOÃO PEDRO BITTENCOURT EIRAS",turma:"2º E.M"},
+  {nome:"JOÃO PEDRO REDIVO PATERNA",turma:"1º E.M"},
+  {nome:"JOAQUIM SOUZA",turma:"1º E.F"},
+  {nome:"JOSÉ HENRIQUE CASCARDI MACHADO",turma:"Maternal 2"},
+  {nome:"JUAN XAVIER FERNANDES",turma:"9º E.F"},
+  {nome:"JULIA CARVALHO NUNES",turma:"1º E.M"},
+  {nome:"JULIA CORSETTI SAMORA",turma:"9º E.F"},
+  {nome:"JULIA FERNANDA BORBATTI CUNHA",turma:"1º E.M"},
+  {nome:"JULIA LEMES DE SOUSA",turma:"7º E.F"},
+  {nome:"JULIA PAULINO JACOB",turma:"2º E.M"},
+  {nome:"JÚLIA FATICHI BIZARI",turma:"6º E.F"},
+  {nome:"JÚLIA MARTINS DE SOUZA ARAUJO",turma:"Maternal 2"},
+  {nome:"KAREN CUETO ECHEVERRIA",turma:"6º E.F"},
+  {nome:"KAUÃ LUMINATTI RIBEIRO DE FIGUEIREDO",turma:"9º E.F"},
+  {nome:"LAÍS PACHÊCO FELIX ROCHA",turma:"7º E.F"},
+  {nome:"LARA BELLOTI XAVIER",turma:"6º E.F"},
+  {nome:"LARA RAMOS MATAYOSHI",turma:"7º E.F"},
+  {nome:"LAURA BARROS SAVIETO",turma:"9º E.F"},
+  {nome:"LAURA CARDOZO BARBOSA",turma:"8º E.F"},
+  {nome:"LAURA DA SILVA VARELLA CARDOSO",turma:"Maternal 1"},
+  {nome:"LAURA DE FREITAS GONÇALVES",turma:"9º E.F"},
+  {nome:"LAURA MARIA SILVA",turma:"2º E.M"},
+  {nome:"LAURA SERAPHIM CABELLO RODRIGUEZ",turma:"6º E.F"},
+  {nome:"LAURA VALERIO DI PAOLO",turma:"7º E.F"},
+  {nome:"LAURA VIVÁ DINA TORELI",turma:"2º E.M"},
+  {nome:"LAVINIA FELIX ROCHA VOLPERT",turma:"3º E.F"},
+  {nome:"LAVÍNIA ARMELIM GAZOLA",turma:"Maternal 1"},
+  {nome:"LAYLA NARDELLI DE OLIVEIRA",turma:"7º E.F"},
+  {nome:"LETICIA GIL BONFIM",turma:"3º E.M"},
+  {nome:"LETÍCIA FERREIRA MARTELLI",turma:"1º E.M"},
+  {nome:"LEONARDO BIANCO COELHO",turma:"7º E.F"},
+  {nome:"LEONARDO CARDOSO BONTEMPO",turma:"7º E.F"},
+  {nome:"LIAM RODRIGUES DE MENDONÇA",turma:"Ed. Infantil 1"},
+  {nome:"LIZ DE LIMA ROSA",turma:"1º E.F"},
+  {nome:"LÍVIA BELLOTI BICUDO",turma:"3º E.M"},
+  {nome:"LÍVIA FATICHI BIZARI",turma:"2º E.M"},
+  {nome:"LÍVIA MONTEIRO LIMA",turma:"Ed. Infantil 1"},
+  {nome:"LÍVIA PONTES FRANÇA",turma:"Ed. Infantil 1"},
+  {nome:"LÍVIA RODRIGUES DE MENDONÇA",turma:"1º E.F"},
+  {nome:"LÍVIA ROSA BERNARDONI CORIONE",turma:"9º E.F"},
+  {nome:"LORENA AGNELLO TAVARES",turma:"2º E.F"},
+  {nome:"LORENA CAMPOS DA SILVA",turma:"3º E.F"},
+  {nome:"LORENA COURBELLY NAZÁRIO",turma:"9º E.F"},
+  {nome:"LORENA DE MORAES SILVA",turma:"9º E.F"},
+  {nome:"LORENA FATICHI CRUZ",turma:"2º E.M"},
+  {nome:"LORENA FELIX CARDOSO",turma:"4º E.F"},
+  {nome:"LORENA GIL SOUZA",turma:"7º E.F"},
+  {nome:"LORENNA TAVARES NOGUEIRA VASILIAUSKAS",turma:"1º E.M"},
+  {nome:"LORRANA DE OLIVEIRA SQUILLACI WEIRICH",turma:"2º E.M"},
+  {nome:"LORENZO CACHEFO SATIL",turma:"8º E.F"},
+  {nome:"LORENZO FREITAS BALTHAZAR",turma:"3º E.F"},
+  {nome:"LUCA SANTINELLI FERREIRA",turma:"Ed. Infantil 2"},
+  {nome:"LUCIANO ALMEIDA PEREIRA",turma:"3º E.M"},
+  {nome:"LUCAS DOS SANTOS SOUSA",turma:"8º E.F"},
+  {nome:"LUCAS JUSTINO DOS SANTOS DE CARVALHO",turma:"6º E.F"},
+  {nome:"LUCAS MOLER CREPALDI",turma:"2º E.M"},
+  {nome:"LUCAS RODRIGUES LIVIERO",turma:"3º E.M"},
+  {nome:"LUIGI DANDALO",turma:"3º E.F"},
+  {nome:"LUIGI GONÇALVES SAMPAIO SANTOS",turma:"7º E.F"},
+  {nome:"LUISA CORSETTI SAMORA",turma:"6º E.F"},
+  {nome:"LUIZ FERNANDO CALDAS DA CRUZ",turma:"9º E.F"},
+  {nome:"LUÍZA BATAGLIÃO DOS SANTOS",turma:"Maternal 2"},
+  {nome:"LUIZA FELIX GODOY",turma:"2º E.M"},
+  {nome:"LUIZA FERRERO MIZOBATA",turma:"3º E.M"},
+  {nome:"LUIZA RAMOS MATAYOSHI",turma:"3º E.M"},
+  {nome:"LUIZA REBELO PLETSCH",turma:"2º E.F"},
+  {nome:"LUNA ALBERGARIA DOMINICHELI",turma:"1º E.F"},
+  {nome:"MAITÊ ALVES JUNHO",turma:"2º E.F"},
+  {nome:"MAITÊ NOGUEIRA MARTINS",turma:"1º E.F"},
+  {nome:"MANUELA RODRIGUES NÓBREGA",turma:"7º E.F"},
+  {nome:"MANUELA TRINDADE DE GODOY",turma:"1º E.F"},
+  {nome:"MANUELA VITÓRIA DOS SANTOS SOUSA",turma:"2º E.M"},
+  {nome:"MANUELLA LIMA MACEDO DA SILVA",turma:"8º E.F"},
+  {nome:"MANUELLA SCARAMBONI",turma:"1º E.F"},
+  {nome:"MARCELO DOREA DE LIMA",turma:"1º E.F"},
+  {nome:"MARIA ANTÔNIA PENHA NOGUEIRA",turma:"1º E.F"},
+  {nome:"MARIA BEATRIZ DE PAULA SILVA",turma:"2º E.M"},
+  {nome:"MARIA CECÍLIA DE PAULA PEREIRA",turma:"Maternal 1"},
+  {nome:"MARIA CLARA ALVES ARAUJO",turma:"6º E.F"},
+  {nome:"MARIA CLARA ALVES DE BARROS",turma:"8º E.F"},
+  {nome:"MARIA CLARA ARAUJO EVANGELISTA",turma:"2º E.M"},
+  {nome:"MARIA CLARA DE ARAUJO CRUZ",turma:"1º E.M"},
+  {nome:"MARIA CLARA LIMA GALBERTO",turma:"6º E.F"},
+  {nome:"MARIA EDUARDA DE OLIVEIRA DELFINO",turma:"7º E.F"},
+  {nome:"MARIA EDUARDA EVANGELISTA",turma:"8º E.F"},
+  {nome:"MARIA EDUARDA MEIRELES DA SILVA",turma:"6º E.F"},
+  {nome:"MARIA EDUARDA OLIVEIRA MOREIRA",turma:"1º E.M"},
+  {nome:"MARIA GABRIELA STEFANINI ARAUJO",turma:"4º E.F"},
+  {nome:"MARIA ISABELA SOARES",turma:"5º E.F"},
+  {nome:"MARIA JÚLIA MADUREIRA DE OLIVEIRA LIMA",turma:"7º E.F"},
+  {nome:"MARIA LUÍSA UCHOA MARCHI",turma:"3º E.F"},
+  {nome:"MARIA LUIZA DA SILVA PIMENTA",turma:"7º E.F"},
+  {nome:"MARIA LUIZA DE OLIVEIRA MORENO",turma:"7º E.F"},
+  {nome:"MARIA LUIZA PELINSON LUIS",turma:"1º E.M"},
+  {nome:"MARIANA MOLER CREPALDI",turma:"8º E.F"},
+  {nome:"MARÍLIA CHERIMELI FERRANTE SILVA",turma:"7º E.F"},
+  {nome:"MARINA DE DEUS OLIVEIRA",turma:"5º E.F"},
+  {nome:"MARINA FERNANDES NASCIMENTO",turma:"4º E.F"},
+  {nome:"MATEUS AVILA DE OLIVEIRA",turma:"9º E.F"},
+  {nome:"MATHEUS DIAS DA SILVA",turma:"6º E.F"},
+  {nome:"MATHEUS FERNANDES NERY FONTES",turma:"3º E.M"},
+  {nome:"MATHEUS GRAMLICH DE ALMEIDA",turma:"2º E.F"},
+  {nome:"MATHEUS PAZ MIRANDA",turma:"3º E.M"},
+  {nome:"MATTEO GUSSONATO",turma:"2º E.F"},
+  {nome:"MELINA NASCIMENTO REINALDI",turma:"1º E.F"},
+  {nome:"MELL BALTHAZAR MUNIZ",turma:"2º E.M"},
+  {nome:"MELISSA PONTES MEDEIROS",turma:"Maternal 2"},
+  {nome:"MELISSA SANTANA MARTINES",turma:"4º E.F"},
+  {nome:"MIGUEL CHEMELLO SANTOS",turma:"1º E.F"},
+  {nome:"MIGUEL DE MORAIS BEZERRA",turma:"8º E.F"},
+  {nome:"MIGUEL DIOGO PERES",turma:"2º E.F"},
+  {nome:"MIGUEL LIMA MACEDO DA SILVA",turma:"1º E.M"},
+  {nome:"MIGUEL PEREIRA DA SILVA NETO",turma:"2º E.F"},
+  {nome:"MIGUEL VEIGA DOS REIS GRACIANO",turma:"5º E.F"},
+  {nome:"MIGUEL VIDO SANT'ANNA ALVARO",turma:"Ed. Infantil 2"},
+  {nome:"MILLENA CAROLINA MENINO DA SILVA",turma:"8º E.F"},
+  {nome:"MIRELLA ALVES SERPA",turma:"3º E.M"},
+  {nome:"MOISES BARBOSA DO CARMO PACHIEL",turma:"2º E.F"},
+  {nome:"MURILLO CACILHA FLORINDO",turma:"3º E.M"},
+  {nome:"MURILLO DA SILVA MOURA",turma:"9º E.F"},
+  {nome:"MURILLO THOMAZ SANTOS DE MIRANDA",turma:"2º E.M"},
+  {nome:"MURILO FOSCHIANI FERREIRA",turma:"2º E.M"},
+  {nome:"MURILO UCHOA MARCHI",turma:"8º E.F"},
+  {nome:"NALU FORMIGARI",turma:"1º E.F"},
+  {nome:"NATALIA VELOSO NEVES",turma:"3º E.M"},
+  {nome:"NATALLY DA SILVA ARAÚJO",turma:"3º E.M"},
+  {nome:"NICOLY CAROLINE DA SILVA BERTONI CASTELÃO",turma:"2º E.M"},
+  {nome:"NICOLAS VASCONCELOS DE HOLANDA",turma:"3º E.F"},
+  {nome:"NICOLLY NOGUEIRA SANTOS",turma:"7º E.F"},
+  {nome:"NOAH FERNANDES SILVA",turma:"Ed. Infantil 1"},
+  {nome:"NOAH FORMIGARI",turma:"4º E.F"},
+  {nome:"NYCOLAS DA SILVA IANONI CASTELÃO",turma:"9º E.F"},
+  {nome:"OTÁVIO DE FREITAS GONÇALVES",turma:"5º E.F"},
+  {nome:"OTÁVIO SILVA AMANN",turma:"3º E.M"},
+  {nome:"PABLO HENRIQUE CRUZ PEREIRA",turma:"3º E.M"},
+  {nome:"PEDRO AUGUSTO GONSALEZ SILVA",turma:"1º E.F"},
+  {nome:"PEDRO EVANGELISTA",turma:"4º E.F"},
+  {nome:"PEDRO FERREIRA PINHEIRO DOS SANTOS",turma:"2º E.F"},
+  {nome:"PEDRO GIANPIETRO COSTA",turma:"Maternal 2"},
+  {nome:"PEDRO HENRIQUE FERNANDES MENDES",turma:"5º E.F"},
+  {nome:"PEDRO IVO DE MORAES GONÇALVES",turma:"3º E.M"},
+  {nome:"PEDRO LUIGI ZANATA SASSO",turma:"3º E.M"},
+  {nome:"PEDRO PONTES FRANÇA",turma:"7º E.F"},
+  {nome:"PIETRA DOMINGUES KOVACS",turma:"3º E.F"},
+  {nome:"PIETRO MEDEIROS DE RIBEIRO",turma:"2º E.M"},
+  {nome:"PIETRO PFEUFFER GUIMARÃES ROCHA",turma:"2º E.F"},
+  {nome:"RAFAEL AGUIAR ANDRADE FERREIRA",turma:"8º E.F"},
+  {nome:"RAFAEL BELAN DE SOUZA",turma:"4º E.F"},
+  {nome:"RAFAEL DE LIMA COSTA",turma:"9º E.F"},
+  {nome:"RAFAEL DIAS ROBLES",turma:"9º E.F"},
+  {nome:"RAFAEL JORGE ROLIM SAPIENSA",turma:"8º E.F"},
+  {nome:"RAFAEL MOREIRA ROCHA DAS NEVES",turma:"5º E.F"},
+  {nome:"RAFAEL RISHTER LOURENÇO ABOU-RIZK",turma:"3º E.M"},
+  {nome:"RAFAELA CARDOSO SOARES",turma:"9º E.F"},
+  {nome:"RAFAELLA CAPOCIO",turma:"7º E.F"},
+  {nome:"RAFAELLA DOS SANTOS FERREIRA",turma:"3º E.M"},
+  {nome:"RAFAELLA FERREIRA SCRAFANI",turma:"7º E.F"},
+  {nome:"RAPHAEL LORENZO REIS DA SILVA",turma:"4º E.F"},
+  {nome:"RAUL BASTOS MARTINS",turma:"1º E.F"},
+  {nome:"RAVI BENJAMIM FERREIRA",turma:"Ed. Infantil 2"},
+  {nome:"RAVI CONDÉ BITTENCOURT",turma:"Maternal 1"},
+  {nome:"RENAN ANTONIO SILVA",turma:"5º E.F"},
+  {nome:"RENATO HENRIQUE ROBBO SILVA",turma:"3º E.F"},
+  {nome:"RENZO TOSETTI LAMONICA CRESPO",turma:"6º E.F"},
+  {nome:"RYAN THOMAZ ALBUQUERQUE",turma:"4º E.F"},
+  {nome:"SAMUEL ALVES DOS REIS",turma:"3º E.M"},
+  {nome:"SAMUEL ARAÚJO DE OLIVEIRA",turma:"2º E.M"},
+  {nome:"SAMUEL FRITZ",turma:"Ed. Infantil 2"},
+  {nome:"SARAH MARIA DA ROCHA MOURA GONÇALVES",turma:"8º E.F"},
+  {nome:"SOFIA ALTIERI RAGGI",turma:"1º E.M"},
+  {nome:"SOFIA FREDERICO DE SOUSA",turma:"2º E.F"},
+  {nome:"SOFIA TOMAGESKI ABOU RIZK",turma:"6º E.F"},
+  {nome:"SOPHIA BERTOCHI SERAPHIM",turma:"6º E.F"},
+  {nome:"SOPHIA CASTRO ALVES DE VASCONCELOS",turma:"2º E.M"},
+  {nome:"SOPHIE LOPES ANDRADE",turma:"9º E.F"},
+  {nome:"STELA YUMI CABBÁU TAKAHASHI",turma:"Ed. Infantil 1"},
+  {nome:"STEPHANY MORAIS DE OLIVEIRA",turma:"8º E.F"},
+  {nome:"TAYLA COSTA LA MONTAGNA",turma:"9º E.F"},
+  {nome:"TÉO LUCAS SILVA SANTOS",turma:"2º E.F"},
+  {nome:"THALES BERTONZIN DOS SANTOS",turma:"Ed. Infantil 1"},
+  {nome:"THALES HENRIQUE FREITAS TOGNETTI",turma:"9º E.F"},
+  {nome:"THEO CAPOCIO",turma:"Ed. Infantil 1"},
+  {nome:"THEO TAMAZATO MADUREIRA",turma:"Maternal 2"},
+  {nome:"THÉO CONDÉ BITTENCOURT",turma:"1º E.F"},
+  {nome:"THÉO CORREIA OHATA",turma:"Maternal 2"},
+  {nome:"THÉO DE LIMA ROSA",turma:"Maternal 2"},
+  {nome:"THÉO DE SOUZA HUNGARO",turma:"3º E.M"},
+  {nome:"THÉO RIBEIRO DOS PASSOS LEAL",turma:"1º E.F"},
+  {nome:"THOMAS HENRIQUE SALES SENA",turma:"4º E.F"},
+  {nome:"THOMAS MACHADO CARUSO",turma:"9º E.F"},
+  {nome:"VALENTINA DE SOUZA GONÇALVES",turma:"7º E.F"},
+  {nome:"VALENTINA EUFROSINO GRADE",turma:"Ed. Infantil 2"},
+  {nome:"VALENTINE ZAVITOSKI DOS SANTOS",turma:"9º E.F"},
+  {nome:"VALENTINO RIPOLI",turma:"6º E.F"},
+  {nome:"VALENTIN PIRILLO",turma:"1º E.F"},
+  {nome:"VICENTE BERTOCHI SERAPHIM",turma:"4º E.F"},
+  {nome:"VINICIUS SANTOS DE ANDRADE",turma:"9º E.F"},
+  {nome:"VITOR ANGELO DE ALMEIDA",turma:"9º E.F"},
+  {nome:"VITOR MARQUES RUIZ CARDOSO SANTOS",turma:"6º E.F"},
+  {nome:"VITOR MEDEIROS DA SILVA",turma:"2º E.M"},
+  {nome:"VITOR MOREIRA ROCHA DAS NEVES",turma:"7º E.F"},
+  {nome:"VITÓRIA NEVES LISBOA",turma:"7º E.F"},
+  {nome:"VITÓRIA RIBEIRO LIMA",turma:"1º E.F"},
+  {nome:"VITTORIO FERRERO MIZOBATA",turma:"1º E.M"},
+  {nome:"YAN LUCCA RODRIGUES SOUZA",turma:"9º E.F"},
+  {nome:"YASMIN OLIVEIRA DOS SANTOS AVILA",turma:"2º E.M"},
+  {nome:"JOÃO NUNES SANTOS",turma:"1º E.F"},
+];
+
+    // ==================== AUTOCOMPLETE ALUNOS ====================
+    let alunosSelecionados = []; // [{nome, turma}]
+    let dropdownFocusIdx = -1;
+
+    function removerAlunoSelecionado(nome) {
+        alunosSelecionados = alunosSelecionados.filter(a => a.nome !== nome);
+        sincronizarAlunoHidden();
+        renderChips();
+        // Se ficou vazio, desbloqueia turma
+        if (alunosSelecionados.length === 0) desbloquearTurma();
+    }
+
+    function renderChips() {
+        const wrap = document.getElementById('alunoChips');
+        wrap.innerHTML = alunosSelecionados.map(a =>
+            `<span class="aluno-chip">${a.nome}<button type="button" onclick="removerAlunoSelecionado('${a.nome.replace(/'/g,"\\'")}')">×</button></span>`
+        ).join('');
+    }
+
+    function sincronizarAlunoHidden() {
+        document.getElementById('nomeAluno').value = alunosSelecionados.map(a => a.nome).join(', ');
+    }
+
+    function selecionarAluno(aluno) {
+        // Evita duplicata
+        if (alunosSelecionados.find(a => a.nome === aluno.nome)) {
+            fecharDropdown(); return;
+        }
+        alunosSelecionados.push(aluno);
+        sincronizarAlunoHidden();
+        renderChips();
+        // Bloqueia turma com a do aluno
+        bloquearTurma(aluno.turma);
+        document.getElementById('alunoSearch').value = '';
+        fecharDropdown();
+        document.getElementById('alunoSearch').focus();
+    }
+
+    function bloquearTurma(turmaVal) {
+        const sel = document.getElementById('turma');
+        sel.value = turmaVal;
+        sel.disabled = true;
+        sel.style.background = 'var(--bg)';
+        document.getElementById('turmaLockMsg').style.display = 'block';
+    }
+
+    function desbloquearTurma() {
+        const sel = document.getElementById('turma');
+        sel.disabled = false;
+        sel.style.background = '';
+        document.getElementById('turmaLockMsg').style.display = 'none';
+    }
+
+    function onTurmaChange() {
+        // Quando o usuário muda a turma manualmente, limpa alunos de outra turma
+        if (alunosSelecionados.length > 0) {
+            const turmaAtual = document.getElementById('turma').value;
+            alunosSelecionados = alunosSelecionados.filter(a => a.turma === turmaAtual);
+            sincronizarAlunoHidden();
+            renderChips();
+            if (alunosSelecionados.length === 0) desbloquearTurma();
+        }
+        fecharDropdown();
+        filtrarAlunos();
+    }
+
+    function filtrarAlunos() {
+        const q = document.getElementById('alunoSearch').value.trim();
+        const turmaSel = document.getElementById('turma').value;
+        const dd = document.getElementById('alunoDropdown');
+        dropdownFocusIdx = -1;
+
+        if (!q && !turmaSel) { fecharDropdown(); return; }
+
+        const qNorm = q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        let lista = ALUNOS_CADASTRADOS.filter(a => {
+            const jaSel = alunosSelecionados.find(s => s.nome === a.nome);
+            if (jaSel) return false;
+            const nNorm = a.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+            const matchNome = !q || nNorm.includes(qNorm);
+            const matchTurma = !turmaSel || a.turma === turmaSel;
+            return matchNome && matchTurma;
+        }).slice(0, 12);
+
+        if (lista.length === 0) {
+            dd.innerHTML = `<div class="aluno-opt-empty">Nenhum aluno encontrado</div>`;
+        } else {
+            dd.innerHTML = lista.map((a,i) =>
+                `<div class="aluno-opt" data-idx="${i}" onmousedown="selecionarAluno(ALUNOS_CADASTRADOS.find(x=>x.nome==='${a.nome.replace(/'/g,"\\'")}' && x.turma==='${a.turma}'))">
+                    <span>${a.nome}</span>
+                    <span class="opt-turma">${a.turma}</span>
+                </div>`
+            ).join('');
+        }
+        dd.classList.add('open');
+    }
+
+    function fecharDropdown() {
+        document.getElementById('alunoDropdown').classList.remove('open');
+        dropdownFocusIdx = -1;
+    }
+
+    function alunoKeydown(e) {
+        const dd = document.getElementById('alunoDropdown');
+        const opts = dd.querySelectorAll('.aluno-opt');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            dropdownFocusIdx = Math.min(dropdownFocusIdx + 1, opts.length - 1);
+            opts.forEach((o,i) => o.classList.toggle('focused', i === dropdownFocusIdx));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            dropdownFocusIdx = Math.max(dropdownFocusIdx - 1, 0);
+            opts.forEach((o,i) => o.classList.toggle('focused', i === dropdownFocusIdx));
+        } else if (e.key === 'Enter' && dropdownFocusIdx >= 0) {
+            e.preventDefault();
+            opts[dropdownFocusIdx]?.dispatchEvent(new MouseEvent('mousedown'));
+        } else if (e.key === 'Escape') {
+            fecharDropdown();
+        } else if (e.key === 'Backspace' && !e.target.value && alunosSelecionados.length > 0) {
+            removerAlunoSelecionado(alunosSelecionados[alunosSelecionados.length - 1].nome);
+        }
+    }
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', e => {
+        if (!e.target.closest('#alunoInputWrap') && !e.target.closest('#alunoDropdown')) fecharDropdown();
+    });
+
+    // Reset do autocomplete no limparForm
+    const _limparFormOrig = limparForm;
+    limparForm = function() {
+        _limparFormOrig();
+        alunosSelecionados = [];
+        renderChips();
+        sincronizarAlunoHidden();
+        desbloquearTurma();
+        fecharDropdown();
+        document.getElementById('alunoSearch').value = '';
+    };
 
     // ==================== SIDEBAR TOGGLE ====================
     function toggleSidebar() {
