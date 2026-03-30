@@ -625,7 +625,7 @@
 <div id="loginScreen" class="login-screen hidden">
     <div class="login-card">
         <div class="login-logo-wrap">
-            <img src="logologin.png" alt="ENAU">
+            <img id="loginLogo" src="logologin.png" alt="ENAU">
         </div>
         <h2>Sistema de Ocorrências</h2>
         <p class="sub">Faça login para continuar</p>
@@ -2828,15 +2828,18 @@
         const track = document.getElementById('darkToggleTrack');
         const thumb = document.getElementById('darkToggleThumb');
         const label = document.getElementById('darkToggleLabel');
+        const loginLogo = document.getElementById('loginLogo');
         if (!track) return;
         if (isDark) {
             track.classList.add('on');
             thumb.textContent = '☀️';
             label.textContent = '☀️ Modo Claro';
+            if (loginLogo) loginLogo.src = 'logoco.png';
         } else {
             track.classList.remove('on');
             thumb.textContent = '🌙';
             label.textContent = '🌙 Modo Escuro';
+            if (loginLogo) loginLogo.src = 'logologin.png';
         }
     }
 
