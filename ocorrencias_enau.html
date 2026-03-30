@@ -36,9 +36,32 @@
             --bg: #f8f8fb;
             --white: #ffffff;
             --sidebar-w: 260px;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --topbar-bg: #ffffff;
+            --table-hover: #fafafa;
+            --shadow: rgba(0,0,0,0.06);
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        body.dark {
+            --p1-light: #2a1035;
+            --p3-light: #2d1018;
+            --success-light: #052e16;
+            --info-light: #0f1f4a;
+            --warning-light: #2d1f00;
+            --text: #e8e8f0;
+            --text-muted: #9ca3af;
+            --border: #2e2e3e;
+            --bg: #0f0f18;
+            --white: #1a1a28;
+            --card-bg: #1a1a28;
+            --input-bg: #222232;
+            --topbar-bg: #14141f;
+            --table-hover: #1f1f30;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
         /* ===== LOADING SCREEN ===== */
         .loading-screen {
@@ -95,14 +118,14 @@
         .aluno-input-wrap {
             min-height: 42px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
             padding: 5px 10px; border: 1.5px solid var(--border); border-radius: 8px;
-            background: var(--white); cursor: text; transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--input-bg); cursor: text; transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
         }
         .aluno-input-wrap:focus-within {
             border-color: var(--p2); box-shadow: 0 0 0 3px rgba(123,45,110,0.12);
         }
         .aluno-input-wrap input {
             border: none; outline: none; box-shadow: none; padding: 2px 4px;
-            font-size: 14px; min-width: 140px; flex: 1; background: transparent;
+            font-size: 14px; min-width: 140px; flex: 1; background: transparent; color: var(--text);
         }
         .aluno-chip {
             display: inline-flex; align-items: center; gap: 5px;
@@ -117,8 +140,8 @@
         .aluno-chip button:hover { color: var(--p3); }
         .aluno-dropdown {
             position: absolute; left: 0; right: 0; top: 100%; z-index: 100;
-            background: var(--white); border: 1.5px solid var(--border); border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12); max-height: 220px; overflow-y: auto;
+            background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 8px;
+            box-shadow: 0 8px 24px var(--shadow); max-height: 220px; overflow-y: auto;
             display: none; margin-top: 2px;
         }
         .aluno-dropdown.open { display: block; }
@@ -143,7 +166,7 @@
         }
 
         .login-card {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 48px 40px 40px;
             width: 100%;
@@ -170,7 +193,7 @@
             width: 100%; padding: 10px 14px;
             border: 1.5px solid var(--border); border-radius: 8px;
             font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text);
-            background: var(--white); transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--input-bg); transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
         }
         input:focus, select:focus, textarea:focus {
             outline: none; border-color: var(--p2);
@@ -276,20 +299,20 @@
         .page-btn {
             min-width: 32px; height: 32px; padding: 0 8px;
             border: 1.5px solid var(--border); border-radius: 6px;
-            background: var(--white); color: var(--text); font-size: 13px;
+            background: var(--card-bg); color: var(--text); font-size: 13px;
             font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.15s;
             display: flex; align-items: center; justify-content: center;
         }
         .page-btn:hover { border-color: var(--p2); color: var(--p2); }
         .page-btn.active { background: var(--p1); border-color: var(--p1); color: white; font-weight: 600; }
         .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .per-page-select { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text); }
+        .per-page-select { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--card-bg); }
 
         /* ===== MAIN ===== */
         .main-content { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
         .topbar {
-            background: var(--white); border-bottom: 1px solid var(--border);
+            background: var(--topbar-bg); border-bottom: 1px solid var(--border);
             padding: 0 32px; height: 60px;
             display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 40;
@@ -316,7 +339,7 @@
 
         /* Card */
         .card {
-            background: var(--white); border: 1px solid var(--border);
+            background: var(--card-bg); border: 1px solid var(--border);
             border-radius: 12px; padding: 24px; margin-bottom: 20px;
         }
         .card-title {
@@ -328,7 +351,7 @@
         /* Stats */
         .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
         .stat-card {
-            background: var(--white); border: 1px solid var(--border);
+            background: var(--card-bg); border: 1px solid var(--border);
             border-radius: 12px; padding: 18px 20px;
             display: flex; align-items: center; gap: 14px;
             transition: transform 0.15s;
@@ -358,7 +381,7 @@
         }
 
         /* Table */
-        .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .table-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
         .table-bar {
             padding: 14px 20px; border-bottom: 1px solid var(--border);
             display: flex; align-items: center; justify-content: space-between;
@@ -373,7 +396,7 @@
         }
         tbody td { padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--border); color: var(--text); }
         tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: #fafafa; }
+        tbody tr:hover td { background: var(--table-hover); }
 
         /* Badges */
         .badge {
@@ -392,19 +415,19 @@
         .badge-professor    { background: var(--p1-light); color: var(--p1); }
 
         /* Filters */
-        .filters-bar { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; }
+        .filters-bar { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; }
         .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; align-items: end; }
         .filters-grid .form-group { margin: 0; }
 
         /* Modal */
         .modal {
             display: none; position: fixed; inset: 0;
-            background: rgba(30,10,40,0.45); z-index: 200;
+            background: rgba(10,5,20,0.6); z-index: 200;
             align-items: center; justify-content: center; backdrop-filter: blur(3px);
         }
         .modal.active { display: flex; }
         .modal-box {
-            background: var(--white); border-radius: 16px; padding: 26px;
+            background: var(--card-bg); border-radius: 16px; padding: 26px;
             width: 90%; max-width: 580px; max-height: 92vh; overflow-y: auto;
             box-shadow: 0 24px 60px rgba(74,20,86,0.25); animation: modalIn 0.2s ease;
         }
@@ -416,7 +439,7 @@
         }
         .modal-header h3 { font-size: 16px; font-weight: 700; color: var(--text); }
         .btn-modal-close {
-            background: var(--bg); border: none; width: 28px; height: 28px;
+            background: var(--bg); border: 1px solid var(--border); width: 28px; height: 28px;
             border-radius: 6px; cursor: pointer; font-size: 17px; color: var(--text-muted);
             display: flex; align-items: center; justify-content: center; transition: all 0.15s;
         }
@@ -427,7 +450,7 @@
         .detail-item { display: flex; flex-direction: column; gap: 4px; }
         .detail-item.full { grid-column: span 2; }
         .detail-label { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
-        .detail-value { font-size: 13.5px; color: var(--text); background: var(--bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); }
+        .detail-value { font-size: 13.5px; color: var(--text); background: var(--input-bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); }
 
         /* Alert */
         .alert { display: flex; align-items: center; gap: 10px; padding: 11px 15px; border-radius: 8px; font-size: 13.5px; margin-bottom: 10px; animation: fadeUp 0.2s ease; }
@@ -471,6 +494,62 @@
         .role-pill.selected { border-color: var(--p2); background: var(--p1-light); color: var(--p1); font-weight: 600; }
 
         .hidden { display: none !important; }
+
+        /* ===== DARK MODE TOGGLE ===== */
+        .dark-toggle {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; margin: 0 10px 10px;
+            border-radius: 8px; cursor: pointer;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.15s;
+        }
+        .dark-toggle:hover { background: rgba(255,255,255,0.12); }
+        .dark-toggle-label { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); flex: 1; }
+
+        .toggle-track {
+            width: 40px; height: 22px; border-radius: 11px;
+            background: rgba(255,255,255,0.15); position: relative;
+            transition: background 0.3s; flex-shrink: 0;
+        }
+        .toggle-track.on { background: linear-gradient(135deg, #7B2D6E, #C0394B); }
+        .toggle-thumb {
+            position: absolute; top: 3px; left: 3px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: white; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+        .toggle-track.on .toggle-thumb { transform: translateX(18px); }
+
+        /* Dark mode adjustments */
+        body.dark .inner-tab { color: var(--text-muted); }
+        body.dark .inner-tab.active { background: var(--bg); color: #c084fc; }
+        body.dark .inner-tabs { background: var(--card-bg); border-color: var(--border); }
+        body.dark .topbar-badge { background: var(--p1-light); color: #c084fc; }
+        body.dark .btn-ghost { color: var(--text-muted); border-color: var(--border); }
+        body.dark .btn-ghost:hover { background: var(--bg); }
+        body.dark .role-pill { border-color: var(--border); color: var(--text-muted); }
+        body.dark .role-pill.selected { border-color: var(--p2); background: var(--p1-light); color: #c084fc; }
+        body.dark .pagination-bar { background: var(--card-bg); }
+        body.dark select option { background: var(--input-bg); color: var(--text); }
+        body.dark .aluno-opt-empty { color: var(--text-muted); }
+        body.dark .badge-pendente     { background: #3d2a00; color: #fbbf24; }
+        body.dark .badge-andamento    { background: #0f1f4a; color: #93c5fd; }
+        body.dark .badge-resolvida    { background: #052e16; color: #86efac; }
+        body.dark .badge-disciplinar  { background: #3b0a0a; color: #fca5a5; }
+        body.dark .badge-comportamento{ background: #3d2a00; color: #fbbf24; }
+        body.dark .badge-material     { background: #0f1f4a; color: #93c5fd; }
+        body.dark .badge-frequencia   { background: var(--p1-light); color: #c084fc; }
+        body.dark .badge-outros       { background: #1f1f2e; color: #9ca3af; }
+        body.dark .badge-professor    { background: var(--p1-light); color: #c084fc; }
+        body.dark .alert-success { background: #052e16; color: #86efac; border-color: #166534; }
+        body.dark .alert-error   { background: #3b0a0a; color: #fca5a5; border-color: #991b1b; }
+        body.dark .alert-info    { background: #0f1f4a; color: #93c5fd; border-color: #1e3a8a; }
+        body.dark .ic-p1 { background: var(--p1-light); }
+        body.dark .ic-p3 { background: var(--p3-light); }
+        body.dark .ic-green { background: #052e16; }
+        body.dark .ic-blue  { background: #0f1f4a; }
+        body.dark .ic-warn  { background: #3d2a00; }
 
         /* ===== SORTABLE HEADERS ===== */
         .sortable { cursor: pointer; user-select: none; white-space: nowrap; }
@@ -609,6 +688,13 @@
                 </button>
             </nav>
 
+            <div onclick="toggleDarkMode()" class="dark-toggle" id="darkToggleBtn">
+                <span class="dark-toggle-label" id="darkToggleLabel">🌙 Modo Escuro</span>
+                <div class="toggle-track" id="darkToggleTrack">
+                    <div class="toggle-thumb" id="darkToggleThumb">🌙</div>
+                </div>
+            </div>
+
             <div class="sidebar-footer">
                 <div class="user-card">
                     <div class="user-avatar" id="userAvatar">?</div>
@@ -695,6 +781,29 @@
                                         </optgroup>
                                     </select>
                                     <span id="turmaLockMsg" style="display:none;font-size:11px;color:var(--text-muted);margin-top:3px">🔒 Definida pelo aluno selecionado</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Disciplina <span class="required">*</span></label>
+                                    <select id="disciplina" required>
+                                        <option value="">Escolher</option>
+                                        <option value="Artes">Artes</option>
+                                        <option value="Biologia">Biologia</option>
+                                        <option value="Ciências">Ciências</option>
+                                        <option value="Ed. Física">Ed. Física</option>
+                                        <option value="Filosofia">Filosofia</option>
+                                        <option value="Física">Física</option>
+                                        <option value="Geografia">Geografia</option>
+                                        <option value="História">História</option>
+                                        <option value="Inglês">Inglês</option>
+                                        <option value="Literatura">Literatura</option>
+                                        <option value="Matemática">Matemática</option>
+                                        <option value="Português">Português</option>
+                                        <option value="Química">Química</option>
+                                        <option value="Redação">Redação</option>
+                                        <option value="Religião">Religião</option>
+                                        <option value="Sociologia">Sociologia</option>
+                                        <option value="Outras">Outras</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-2">
                                     <label>Ocorrência <span class="required">*</span></label>
@@ -1238,6 +1347,7 @@
             }
         }, 2000);
 
+        atualizarToggleUI(document.body.classList.contains('dark'));
         setDataHoraAtual();
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
         document.getElementById('formOcorrencia').addEventListener('submit', handleSubmitOcorrencia);
@@ -1490,6 +1600,7 @@
             postado_por:     currentUser.nome,
             nome_aluno:      document.getElementById('nomeAluno').value,
             turma:           document.getElementById('turma').value,
+            disciplina:      document.getElementById('disciplina').value,
             tipo_ocorrencia: document.getElementById('tipoOcorrencia').value,
             descricao:       document.getElementById('descricao').value,
             status:          'pendente'
@@ -1687,6 +1798,7 @@
                 <div class="detail-item"><div class="detail-label">Professor</div><div class="detail-value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
                 <div class="detail-item"><div class="detail-label">Aluno</div><div class="detail-value">${oc.nome_aluno}</div></div>
                 <div class="detail-item"><div class="detail-label">Turma</div><div class="detail-value">${oc.turma}</div></div>
+                <div class="detail-item"><div class="detail-label">Disciplina</div><div class="detail-value">${oc.disciplina || '—'}</div></div>
                 <div class="detail-item"><div class="detail-label">Tipo</div><div class="detail-value">${badgeTipo(oc.tipo_ocorrencia)}</div></div>
                 <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${badgeStatus(oc.status)}</div></div>
                 <div class="detail-item full"><div class="detail-label">Descrição</div><div class="detail-value" style="white-space:pre-wrap">${oc.descricao}</div></div>
@@ -2144,6 +2256,7 @@
     <div class="item"><div class="label">Professor</div><div class="value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:#888;margin-top:3px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
     <div class="item"><div class="label">Aluno(s)</div><div class="value">${oc.nome_aluno}</div></div>
     <div class="item"><div class="label">Turma</div><div class="value">${oc.turma}</div></div>
+    <div class="item"><div class="label">Disciplina</div><div class="value">${oc.disciplina || '—'}</div></div>
     <div class="item full"><div class="label">Ocorrência</div><div class="value">${oc.tipo_ocorrencia}</div></div>
     <div class="item full"><div class="label">Descrição</div><div class="value" style="white-space:pre-wrap">${oc.descricao}</div></div>
     <div class="item"><div class="label">Status</div><div class="value">${oc.status}</div></div>
@@ -2701,6 +2814,41 @@
         fecharDropdown();
         document.getElementById('alunoSearch').value = '';
     };
+
+    // ==================== DARK MODE ====================
+    function toggleDarkMode() {
+        const isDark = document.body.classList.toggle('dark');
+        localStorage.setItem('darkMode', isDark ? '1' : '0');
+        atualizarToggleUI(isDark);
+        // Recria os gráficos com as novas cores
+        if (typeof renderGraficos === 'function') renderGraficos();
+    }
+
+    function atualizarToggleUI(isDark) {
+        const track = document.getElementById('darkToggleTrack');
+        const thumb = document.getElementById('darkToggleThumb');
+        const label = document.getElementById('darkToggleLabel');
+        if (!track) return;
+        if (isDark) {
+            track.classList.add('on');
+            thumb.textContent = '☀️';
+            label.textContent = '☀️ Modo Claro';
+        } else {
+            track.classList.remove('on');
+            thumb.textContent = '🌙';
+            label.textContent = '🌙 Modo Escuro';
+        }
+    }
+
+    // Aplica preferência salva assim que o DOM carrega
+    (function() {
+        const saved = localStorage.getItem('darkMode');
+        const prefereDark = saved !== null ? saved === '1' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefereDark) {
+            document.body.classList.add('dark');
+            // A UI do toggle será atualizada pelo DOMContentLoaded
+        }
+    })();
 
     // ==================== SIDEBAR TOGGLE ====================
     function toggleSidebar() {
