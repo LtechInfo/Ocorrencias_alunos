@@ -416,6 +416,22 @@
             border-color: var(--p2);
             background: var(--p1-light);
         }
+        .btn-copy-icon {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-copy-icon svg {
+            width: 14px;
+            height: 14px;
+            display: block;
+            stroke: currentColor;
+            fill: none;
+        }
 
         /* Badges */
         .badge {
@@ -1818,6 +1834,13 @@
         return String(raw || '').split(',').map(n => n.trim()).filter(Boolean);
     }
 
+    const COPY_ICON_SVG = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="8" y="7" width="11" height="14" rx="1.8" stroke-width="1.8"></rect>
+            <path d="M5 17V4.8A1.8 1.8 0 0 1 6.8 3h8.7" stroke-width="1.8" stroke-linecap="round"></path>
+        </svg>
+    `;
+
     function renderAlunoCell(raw) {
         const nomes = parseNomesAluno(raw);
         const titulo = escaparHtml(raw || '—');
@@ -1829,7 +1852,7 @@
         }).join('');
 
         const botoesLista = nomes.length > 1
-            ? `<button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encodeURIComponent(nomes.join('\n'))}'),'Lista copiada (um por linha)!')">📋 Copiar lista (1 por linha)</button>`
+            ? `<button type="button" class="btn-copy-inline btn-copy-icon" title="Copiar lista (1 por linha)" aria-label="Copiar lista (1 por linha)" onclick="copiarTexto(decodeURIComponent('${encodeURIComponent(nomes.join('\n'))}'),'Lista copiada (um por linha)!')">${COPY_ICON_SVG}</button>`
             : '';
 
         return `
@@ -1851,7 +1874,7 @@
             <div class="aluno-cell">
                 <strong>${escaparHtml(prof)}</strong>
                 <div class="aluno-copy-tools">
-                    <button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encoded}'),'Professor copiado!')">📋 Copiar professor</button>
+                    <button type="button" class="btn-copy-inline btn-copy-icon" title="Copiar professor" aria-label="Copiar professor" onclick="copiarTexto(decodeURIComponent('${encoded}'),'Professor copiado!')">${COPY_ICON_SVG}</button>
                 </div>
             </div>
         `;
@@ -1872,8 +1895,8 @@
         const acaoTomadaTxt = String(oc.acao_tomada || '');
         const alunosPorLinha = parseNomesAluno(alunoTxt).join('\n');
 
-        const btnCopiar = (valor, msg = 'Campo copiado!') =>
-            `<button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encodeURIComponent(valor)}'),'${msg}')">📋 Copiar</button>`;
+        const btnCopiar = (valor, msg = 'Campo copiado!', titulo = 'Copiar campo') =>
+            `<button type="button" class="btn-copy-inline btn-copy-icon" title="${escaparHtml(titulo)}" aria-label="${escaparHtml(titulo)}" onclick="copiarTexto(decodeURIComponent('${encodeURIComponent(valor)}'),'${msg}')">${COPY_ICON_SVG}</button>`;
 
         document.getElementById('modalVisualizarContent').innerHTML = `
             <div class="detail-grid">
@@ -1881,7 +1904,7 @@
                     <div class="detail-label">Data e Hora</div>
                     <div class="detail-value">
                         ${escaparHtml(dataHoraTxt)}
-                        <div class="detail-copy-row">${btnCopiar(dataHoraTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(dataHoraTxt, 'Data e hora copiada!', 'Copiar data e hora')}</div>
                     </div>
                 </div>
 
@@ -1890,7 +1913,7 @@
                     <div class="detail-value">
                         ${escaparHtml(professorTxt)}
                         ${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Lançado por: ${escaparHtml(oc.postado_por)}</div>` : ''}
-                        <div class="detail-copy-row">${btnCopiar(professorTxt, 'Professor copiado!')}</div>
+                        <div class="detail-copy-row">${btnCopiar(professorTxt, 'Professor copiado!', 'Copiar professor')}</div>
                     </div>
                 </div>
 
@@ -1899,8 +1922,8 @@
                     <div class="detail-value" style="white-space:pre-wrap">
                         ${escaparHtml(alunoTxt)}
                         <div class="detail-copy-row">
-                            ${btnCopiar(alunoTxt, 'Aluno(s) copiado(s)!')}
-                            ${alunosPorLinha && alunosPorLinha !== alunoTxt ? btnCopiar(alunosPorLinha, 'Aluno(s) copiado(s) em linhas!') : ''}
+                            ${btnCopiar(alunoTxt, 'Aluno(s) copiado(s)!', 'Copiar aluno(s)')}
+                            ${alunosPorLinha && alunosPorLinha !== alunoTxt ? btnCopiar(alunosPorLinha, 'Aluno(s) copiado(s) em linhas!', 'Copiar aluno(s) em linhas') : ''}
                         </div>
                     </div>
                 </div>
@@ -1909,7 +1932,7 @@
                     <div class="detail-label">Turma</div>
                     <div class="detail-value">
                         ${escaparHtml(turmaTxt)}
-                        <div class="detail-copy-row">${btnCopiar(turmaTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(turmaTxt, 'Turma copiada!', 'Copiar turma')}</div>
                     </div>
                 </div>
 
@@ -1917,7 +1940,7 @@
                     <div class="detail-label">Disciplina</div>
                     <div class="detail-value">
                         ${escaparHtml(disciplinaTxt)}
-                        <div class="detail-copy-row">${btnCopiar(disciplinaTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(disciplinaTxt, 'Disciplina copiada!', 'Copiar disciplina')}</div>
                     </div>
                 </div>
 
@@ -1925,7 +1948,7 @@
                     <div class="detail-label">Tipo</div>
                     <div class="detail-value">
                         ${badgeTipo(oc.tipo_ocorrencia)}
-                        <div class="detail-copy-row">${btnCopiar(tipoTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(tipoTxt, 'Tipo copiado!', 'Copiar tipo')}</div>
                     </div>
                 </div>
 
@@ -1933,7 +1956,7 @@
                     <div class="detail-label">Status</div>
                     <div class="detail-value">
                         ${badgeStatus(oc.status)}
-                        <div class="detail-copy-row">${btnCopiar(statusTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(statusTxt, 'Status copiado!', 'Copiar status')}</div>
                     </div>
                 </div>
 
@@ -1941,7 +1964,7 @@
                     <div class="detail-label">Descrição</div>
                     <div class="detail-value" style="white-space:pre-wrap">
                         ${escaparHtml(descricaoTxt)}
-                        <div class="detail-copy-row">${btnCopiar(descricaoTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(descricaoTxt, 'Descrição copiada!', 'Copiar descrição')}</div>
                     </div>
                 </div>
 
@@ -1950,7 +1973,7 @@
                     <div class="detail-label">Ação Tomada</div>
                     <div class="detail-value" style="white-space:pre-wrap">
                         ${escaparHtml(acaoTomadaTxt)}
-                        <div class="detail-copy-row">${btnCopiar(acaoTomadaTxt)}</div>
+                        <div class="detail-copy-row">${btnCopiar(acaoTomadaTxt, 'Ação tomada copiada!', 'Copiar ação tomada')}</div>
                     </div>
                 </div>` : ''}
             </div>
