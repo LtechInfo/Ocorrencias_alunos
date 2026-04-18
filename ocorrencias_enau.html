@@ -398,6 +398,25 @@
         tbody tr:last-child td { border-bottom: none; }
         tbody tr:hover td { background: var(--table-hover); }
 
+        .aluno-cell { display: flex; flex-direction: column; gap: 6px; }
+        .aluno-copy-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+        .btn-copy-inline {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-copy-inline:hover {
+            color: var(--p1);
+            border-color: var(--p2);
+            background: var(--p1-light);
+        }
+
         /* Badges */
         .badge {
             display: inline-flex; align-items: center;
@@ -1705,9 +1724,10 @@
 
         slice.forEach(oc => {
             const data = new Date(oc.data_hora).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'});
+            const alunoCell = renderAlunoCell(oc.nome_aluno);
             html += `<tr>
                 <td class="log-time">${data}</td>
-                <td><strong>${oc.nome_aluno}</strong></td>
+                <td>${alunoCell}</td>
                 <td>${oc.turma}</td>
                 <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${oc.tipo_ocorrencia}">${oc.tipo_ocorrencia}</td>
                 ${mostrarProf ? `<td>${oc.nome_professor}</td>` : ''}
@@ -1787,6 +1807,39 @@
             return 0;
         });
         if (s.render) s.render(sorted, 1);
+    }
+
+    function escaparHtml(texto) {
+        return String(texto || '').replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+    }
+
+    function parseNomesAluno(raw) {
+        return String(raw || '').split(',').map(n => n.trim()).filter(Boolean);
+    }
+
+    function renderAlunoCell(raw) {
+        const nomes = parseNomesAluno(raw);
+        const titulo = escaparHtml(raw || '—');
+        if (nomes.length === 0) return `<strong>—</strong>`;
+
+        const botoesIndividuais = nomes.map(nome => {
+            const encoded = encodeURIComponent(nome);
+            return `<button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encoded}'),'Nome copiado!')">📋 ${escaparHtml(nome)}</button>`;
+        }).join('');
+
+        const botoesLista = nomes.length > 1
+            ? `<button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encodeURIComponent(nomes.join('\n'))}'),'Lista copiada (um por linha)!')">📋 Copiar lista (1 por linha)</button>`
+            : '';
+
+        return `
+            <div class="aluno-cell">
+                <strong>${titulo}</strong>
+                <div class="aluno-copy-tools">
+                    ${botoesLista}
+                    ${botoesIndividuais}
+                </div>
+            </div>
+        `;
     }
 
     function visualizarOcorrencia(id) {
@@ -2200,6 +2253,28 @@
     }
 
     function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    async function copiarTexto(texto, sucessoMsg = 'Copiado!') {
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(texto);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = texto;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+            }
+            mostrarAlerta(sucessoMsg, 'success');
+        } catch (e) {
+            console.error(e);
+            mostrarAlerta('Não foi possível copiar.', 'error');
+        }
+    }
 
     function mostrarAlerta(msg, tipo) {
         const c  = document.getElementById('alertContainer');
