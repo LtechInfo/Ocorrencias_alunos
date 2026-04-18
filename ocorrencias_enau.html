@@ -470,6 +470,7 @@
         .detail-item.full { grid-column: span 2; }
         .detail-label { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
         .detail-value { font-size: 13.5px; color: var(--text); background: var(--input-bg); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); }
+        .detail-copy-row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
 
         /* Alert */
         .alert { display: flex; align-items: center; gap: 10px; padding: 11px 15px; border-radius: 8px; font-size: 13.5px; margin-bottom: 10px; animation: fadeUp 0.2s ease; }
@@ -1859,17 +1860,99 @@
     function visualizarOcorrencia(id) {
         const oc = todasOcorrencias.find(o => o.id === id);
         if (!oc) return;
+
+        const dataHoraTxt = new Date(oc.data_hora).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+        const professorTxt = String(oc.nome_professor || '');
+        const alunoTxt = String(oc.nome_aluno || '');
+        const turmaTxt = String(oc.turma || '');
+        const disciplinaTxt = String(oc.disciplina || '—');
+        const tipoTxt = String(oc.tipo_ocorrencia || '');
+        const statusTxt = formatarStatus(oc.status);
+        const descricaoTxt = String(oc.descricao || '');
+        const acaoTomadaTxt = String(oc.acao_tomada || '');
+        const alunosPorLinha = parseNomesAluno(alunoTxt).join('\n');
+
+        const btnCopiar = (valor, msg = 'Campo copiado!') =>
+            `<button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encodeURIComponent(valor)}'),'${msg}')">📋 Copiar</button>`;
+
         document.getElementById('modalVisualizarContent').innerHTML = `
             <div class="detail-grid">
-                <div class="detail-item"><div class="detail-label">Data e Hora</div><div class="detail-value">${new Date(oc.data_hora).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo'})}</div></div>
-                <div class="detail-item"><div class="detail-label">Professor</div><div class="detail-value">${oc.nome_professor}${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Lançado por: ${oc.postado_por}</div>` : ''}</div></div>
-                <div class="detail-item"><div class="detail-label">Aluno</div><div class="detail-value">${oc.nome_aluno}</div></div>
-                <div class="detail-item"><div class="detail-label">Turma</div><div class="detail-value">${oc.turma}</div></div>
-                <div class="detail-item"><div class="detail-label">Disciplina</div><div class="detail-value">${oc.disciplina || '—'}</div></div>
-                <div class="detail-item"><div class="detail-label">Tipo</div><div class="detail-value">${badgeTipo(oc.tipo_ocorrencia)}</div></div>
-                <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">${badgeStatus(oc.status)}</div></div>
-                <div class="detail-item full"><div class="detail-label">Descrição</div><div class="detail-value" style="white-space:pre-wrap">${oc.descricao}</div></div>
-                ${oc.acao_tomada ? `<div class="detail-item full"><div class="detail-label">Ação Tomada</div><div class="detail-value" style="white-space:pre-wrap">${oc.acao_tomada}</div></div>` : ''}
+                <div class="detail-item">
+                    <div class="detail-label">Data e Hora</div>
+                    <div class="detail-value">
+                        ${escaparHtml(dataHoraTxt)}
+                        <div class="detail-copy-row">${btnCopiar(dataHoraTxt)}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Professor</div>
+                    <div class="detail-value">
+                        ${escaparHtml(professorTxt)}
+                        ${oc.postado_por && oc.postado_por !== oc.nome_professor ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">Lançado por: ${escaparHtml(oc.postado_por)}</div>` : ''}
+                        <div class="detail-copy-row">${btnCopiar(professorTxt, 'Professor copiado!')}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Aluno</div>
+                    <div class="detail-value" style="white-space:pre-wrap">
+                        ${escaparHtml(alunoTxt)}
+                        <div class="detail-copy-row">
+                            ${btnCopiar(alunoTxt, 'Aluno(s) copiado(s)!')}
+                            ${alunosPorLinha && alunosPorLinha !== alunoTxt ? btnCopiar(alunosPorLinha, 'Aluno(s) copiado(s) em linhas!') : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Turma</div>
+                    <div class="detail-value">
+                        ${escaparHtml(turmaTxt)}
+                        <div class="detail-copy-row">${btnCopiar(turmaTxt)}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Disciplina</div>
+                    <div class="detail-value">
+                        ${escaparHtml(disciplinaTxt)}
+                        <div class="detail-copy-row">${btnCopiar(disciplinaTxt)}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Tipo</div>
+                    <div class="detail-value">
+                        ${badgeTipo(oc.tipo_ocorrencia)}
+                        <div class="detail-copy-row">${btnCopiar(tipoTxt)}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        ${badgeStatus(oc.status)}
+                        <div class="detail-copy-row">${btnCopiar(statusTxt)}</div>
+                    </div>
+                </div>
+
+                <div class="detail-item full">
+                    <div class="detail-label">Descrição</div>
+                    <div class="detail-value" style="white-space:pre-wrap">
+                        ${escaparHtml(descricaoTxt)}
+                        <div class="detail-copy-row">${btnCopiar(descricaoTxt)}</div>
+                    </div>
+                </div>
+
+                ${oc.acao_tomada ? `
+                <div class="detail-item full">
+                    <div class="detail-label">Ação Tomada</div>
+                    <div class="detail-value" style="white-space:pre-wrap">
+                        ${escaparHtml(acaoTomadaTxt)}
+                        <div class="detail-copy-row">${btnCopiar(acaoTomadaTxt)}</div>
+                    </div>
+                </div>` : ''}
             </div>
             <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="imprimirOcorrencia('${oc.id}')">🖨️ Imprimir</button>
