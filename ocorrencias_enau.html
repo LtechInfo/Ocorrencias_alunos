@@ -1730,7 +1730,7 @@
                 <td>${alunoCell}</td>
                 <td>${oc.turma}</td>
                 <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${oc.tipo_ocorrencia}">${oc.tipo_ocorrencia}</td>
-                ${mostrarProf ? `<td>${oc.nome_professor}</td>` : ''}
+                ${mostrarProf ? `<td>${renderProfessorCell(oc.nome_professor)}</td>` : ''}
                 ${isAdmin ? `<td>${badgeStatus(oc.status)}</td>` : ''}
                 <td>
                     <div style="display:flex;gap:5px">
@@ -1837,6 +1837,20 @@
                 <div class="aluno-copy-tools">
                     ${botoesLista}
                     ${botoesIndividuais}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderProfessorCell(nome) {
+        const prof = String(nome || '').trim();
+        if (!prof) return '—';
+        const encoded = encodeURIComponent(prof);
+        return `
+            <div class="aluno-cell">
+                <strong>${escaparHtml(prof)}</strong>
+                <div class="aluno-copy-tools">
+                    <button type="button" class="btn-copy-inline" onclick="copiarTexto(decodeURIComponent('${encoded}'),'Professor copiado!')">📋 Copiar professor</button>
                 </div>
             </div>
         `;
