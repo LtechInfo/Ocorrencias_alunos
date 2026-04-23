@@ -1335,6 +1335,7 @@
     let todasOcorrencias = [];
     let todosUsuarios    = [];
     let todosLogs        = [];
+    let ALUNOS_CADASTRADOS = [];
 
     const pageTitles = {
         registro:    ['Registrar Ocorrência',   'Preencha os dados da ocorrência'],
@@ -1384,6 +1385,7 @@
         }, 2000);
 
         atualizarToggleUI(document.body.classList.contains('dark'));
+        carregarAlunosCadastrados();
         setDataHoraAtual();
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
         document.getElementById('formOcorrencia').addEventListener('submit', handleSubmitOcorrencia);
@@ -2503,7 +2505,7 @@
     }
 
     // ==================== ALUNOS CADASTRADOS ====================
-    const ALUNOS_CADASTRADOS = [
+    const ALUNOS_CADASTRADOS_FALLBACK = [
   {nome:"ÁGATA DE SOUZA REIS SANTOS",turma:"Ed. Infantil 1"},
   {nome:"ALICE BORJA GRACINDO",turma:"7º E.F"},
   {nome:"ALICE CASTRO VASCONCELOS",turma:"3º E.M"},
@@ -2870,6 +2872,51 @@
   {nome:"YASMIN OLIVEIRA DOS SANTOS AVILA",turma:"2º E.M"},
   {nome:"JOÃO NUNES SANTOS",turma:"1º E.F"},
 ];
+
+    function normalizarBuscaTexto(valor) {
+        return String(valor || '')
+            .trim()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function normalizarLinhaAluno(row) {
+        if (!row || typeof row !== 'object') return null;
+        const nome = String(row.nome ?? row.nome_aluno ?? '').trim();
+        const turma = String(row.turma ?? row.serie ?? row.classe ?? '').trim();
+        if (!nome || !turma) return null;
+        return { nome, turma };
+    }
+
+    function deduplicarAlunos(lista) {
+        const vistos = new Set();
+        const saida = [];
+        lista.forEach(item => {
+            const aluno = normalizarLinhaAluno(item);
+            if (!aluno) return;
+            const chave = `${normalizarBuscaTexto(aluno.nome)}|${normalizarBuscaTexto(aluno.turma)}`;
+            if (vistos.has(chave)) return;
+            vistos.add(chave);
+            saida.push(aluno);
+        });
+        return saida.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    }
+
+    async function carregarAlunosCadastrados() {
+        // Carrega fallback imediatamente para manter o autocomplete funcional
+        ALUNOS_CADASTRADOS = deduplicarAlunos(ALUNOS_CADASTRADOS_FALLBACK);
+        try {
+            const res = await api('alunos?select=*');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const rows = await res.json();
+            if (!Array.isArray(rows) || rows.length === 0) return;
+            const remotos = deduplicarAlunos(rows);
+            if (remotos.length > 0) ALUNOS_CADASTRADOS = remotos;
+        } catch (err) {
+            console.warn('Falha ao carregar alunos do Supabase; usando fallback local.', err);
+        }
+    }
 
     // ==================== AUTOCOMPLETE ALUNOS ====================
     let alunosSelecionados = []; // [{nome, turma}]
